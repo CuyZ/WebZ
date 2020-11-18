@@ -104,8 +104,7 @@ final class RequestPayload extends HttpPayload
 
     public function withAuthBasic(string $username, ?string $password = null): self
     {
-        unset($this->options['auth_bearer']);
-        unset($this->options['auth_ntlm']);
+        $this->clearAuths();
 
         $auth = $username;
 
@@ -114,6 +113,15 @@ final class RequestPayload extends HttpPayload
         }
 
         $this->options['auth_basic'] = $auth;
+
+        return $this;
+    }
+
+    public function withAuthBearer(string $token): self
+    {
+        $this->clearAuths();
+
+        $this->options['auth_bearer'] = $token;
 
         return $this;
     }
@@ -143,5 +151,12 @@ final class RequestPayload extends HttpPayload
     public function options(): array
     {
         return $this->options;
+    }
+
+    private function clearAuths(): void
+    {
+        unset($this->options['auth_basic']);
+        unset($this->options['auth_bearer']);
+        unset($this->options['auth_ntlm']);
     }
 }

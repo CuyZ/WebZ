@@ -191,3 +191,13 @@ it('saves "basic auth" options with password', function () {
         'auth_basic' => 'fiz:baz',
     ]);
 });
+
+it('saves "bearer auth" option', function () {
+    $payload = new RequestPayload('foo', 'bar');
+
+    $payload->withAuthBearer('foo');
+
+    expect($payload->options())->toBe([
+        'auth_bearer' => 'foo',
+    ]);
+});
