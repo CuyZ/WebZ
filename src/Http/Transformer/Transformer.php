@@ -2,7 +2,7 @@
 
 namespace CuyZ\WebZ\Http\Transformer;
 
-use Symfony\Contracts\HttpClient\ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 
 interface Transformer
 {

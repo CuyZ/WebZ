@@ -36,7 +36,6 @@ test-integration: start-server
 # These tests are a bit of a hack so they need to be executed on their own
 test-platform:
 	php vendor/bin/pest tests/Platform/SoapTest.php
-	php vendor/bin/pest tests/Platform/HttpTest.php
 
 coverage: start-server
 	php vendor/bin/pest --coverage --group=unit,integration
@@ -48,10 +47,10 @@ coverage-unit:
 coverage-integration:
 	php vendor/bin/pest --group=integration --coverage
 
-static-phpstan:
+phpstan:
 	php vendor/bin/phpstan analyse
 
-static-psalm:
+psalm:
 	php vendor/bin/psalm
 
 static:

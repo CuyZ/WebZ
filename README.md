@@ -30,15 +30,18 @@ $ composer req cuyz/webz
 
 ### HTTP
 
-To use the HTTP Transport you will need an implementation of `symfony/http-client-contracts`.
+The HTTP transport uses [Guzzle][link-guzzle] internally.
 
-You can install it via composer:
+You can configure the Guzzle client creation when instantiating the transport:
 
-```shell script
-$ composer req symfony/http-client
+```php
+use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Http\HttpTransport;
+use GuzzleHttp\Client;
+
+$bus = Bus::builder()
+    ->withTransport(new HttpTransport(fn() => new Client()));
 ```
-
-WebZ works with different versions of the `symfony/http-client` package.
 
 ### SOAP
 
@@ -56,14 +59,19 @@ handle exceptions, log, etc.
 All this code could be repeated in multiple places and projects:
 
 ```php
-use Symfony\Component\HttpClient\HttpClient;
+use GuzzleHttp\Client;
 
-$client = HttpClient::create();
+$client = new CLient();
 $response = $client->request('GET', 'https://api.example.com/get-data');
 
-$data = $response->toArray();
+$data = json_decode(
+    $response->getBody()->getContents(),
+    true,
+    512,
+    JSON_THROW_ON_ERROR
+);
 
-// Here you might have to transform the data, handle cache, exceptions, etc
+// Here you might have to handle the cache, exceptions, etc
 
 echo $data['foo'];
 ```
@@ -73,6 +81,8 @@ echo $data['foo'];
 With WebZ you can abstract all this. Let say we want to fetch this data object:
 
 ```php
+namespace Acme;
+
 class Place
 {
     private string $name;
@@ -92,6 +102,7 @@ class Place
 It can be fetched from an HTTP request:
 
 ```php
+use Acme\Place;
 use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
 use CuyZ\WebZ\Http\Payload\RequestPayload;
@@ -123,6 +134,7 @@ class GetPlace extends WebService
 Or from SOAP:
 
 ```php
+use Acme\Place;
 use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Soap\SoapPayload;
 
@@ -408,8 +420,9 @@ $ make test-unit
 [link-packagist]: https://packagist.org/packages/cuyz/webz
 [link-downloads]: https://packagist.org/packages/cuyz/webz
 [link-workflow]: https://github.com/Mopolo/webz-private/actions?query=workflow%3ATests
+[link-guzzle]: https://github.com/guzzle/guzzle
 [link-soap]: https://www.php.net/manual/en/soap.setup.php
 [link-psr-simple-cache]: https://packagist.org/providers/psr/simple-cache-implementation
 [link-psr-event-dispatcher]: https://packagist.org/providers/psr/event-dispatcher-implementation
-[link-symfony-event-dispatcher]: https://packagist.org/packages/symfony/event-dispatcher
+[link-symfony-event-dispatcher]: https://symfony.com/doc/current/components/event_dispatcher.html
 [link-cache-filesystem]: https://github.com/php-cache/filesystem-adapter

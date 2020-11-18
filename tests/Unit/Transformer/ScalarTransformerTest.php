@@ -1,11 +1,12 @@
 <?php
 
 use CuyZ\WebZ\Http\Transformer\ScalarTransformer;
-use Symfony\Component\HttpClient\MockHttpClient;
-use Symfony\Component\HttpClient\Response\MockResponse;
+use GuzzleHttp\Psr7\Response;
+use Tests\Mocks;
 
 it('transforms a scalar value to an array', function ($input, string $expected) {
-    $client = new MockHttpClient(new MockResponse($input));
+    $client = Mocks::httpClient(new Response(200, [], $input));
+
     $response = $client->request('GET', 'http://localhost');
 
     $transformer = new ScalarTransformer();
@@ -20,5 +21,6 @@ it('transforms a scalar value to an array', function ($input, string $expected) 
     [true, '1'],
     [false, ''],
     [null, ''],
-    [[], ''],
+    [json_encode(['foo' => 'bar']), '{"foo":"bar"}'],
+    ['<div>Hello</div>', '<div>Hello</div>'],
 ]);

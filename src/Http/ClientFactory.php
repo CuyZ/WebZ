@@ -2,9 +2,9 @@
 
 namespace CuyZ\WebZ\Http;
 
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use GuzzleHttp\Client;
 
 interface ClientFactory
 {
-    public function build(): HttpClientInterface;
+    public function build(): Client;
 }

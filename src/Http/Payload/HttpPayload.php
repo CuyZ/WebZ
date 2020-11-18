@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace CuyZ\WebZ\Http\Payload;
 
-use CuyZ\WebZ\Http\Transformer\AutoTransformer;
 use CuyZ\WebZ\Http\Transformer\Transformer;
 
 abstract class HttpPayload

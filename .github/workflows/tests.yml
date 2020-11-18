@@ -39,3 +39,9 @@ jobs:
 
       - name: Execute platform tests
         run: make test-platform
+
+      - name: Execute PHPStan
+        run: make phpstan
+
+      - name: Execute Psalm
+        run: make psalm

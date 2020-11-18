@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace CuyZ\WebZ\Http\Payload;
 
-use CuyZ\WebZ\Http\Transformer\Transformer;
-
 final class MultiplexPayload extends HttpPayload
 {
     private ?float $streamTimeout;
@@ -22,15 +20,8 @@ final class MultiplexPayload extends HttpPayload
         return $this->streamTimeout;
     }
 
-    public function with(string $method, string $url, array $options = [], ?Transformer $transformer = null): self
+    public function with(RequestPayload $request): self
     {
-        $request = new RequestPayload($method, $url);
-        $request->withOptions($options);
-
-        if ($transformer instanceof Transformer) {
-            $request->withTransformer($transformer);
-        }
-
         $this->requests[] = $request;
         return $this;
     }

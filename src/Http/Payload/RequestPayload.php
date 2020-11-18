@@ -29,18 +29,6 @@ final class RequestPayload extends HttpPayload
         return $this;
     }
 
-    public function withOptions(array $options): self
-    {
-        $this->options = $options;
-        return $this;
-    }
-
-    public function mergeOptions(array $options): self
-    {
-        $this->options = $options + $this->options;
-        return $this;
-    }
-
     public function withBaseUri(string $baseUri): self
     {
         $this->options['base_uri'] = $baseUri;
@@ -104,26 +92,22 @@ final class RequestPayload extends HttpPayload
 
     public function withAuthBasic(string $username, ?string $password = null): self
     {
-        $this->clearAuths();
-
-        $auth = $username;
+        $auth = [$username];
 
         if (null !== $password && strlen($password) > 0) {
-            $auth .= ":$password";
+            $auth[] = $password;
         }
 
-        $this->options['auth_basic'] = $auth;
+        $this->options['auth'] = $auth;
 
         return $this;
     }
 
     public function withAuthBearer(string $token): self
     {
-        $this->clearAuths();
+        unset($this->options['auth']);
 
-        $this->options['auth_bearer'] = $token;
-
-        return $this;
+        return $this->withHeader('Authorization', "Bearer $token");
     }
 
     public function method(): string
@@ -138,7 +122,10 @@ final class RequestPayload extends HttpPayload
     public function url(): string
     {
         if (null === $this->url || strlen($this->url) === 0) {
-            if (!isset($this->options['base_uri']) || strlen($this->options['base_uri']) === 0) {
+            if (!isset($this->options['base_uri'])
+                || !is_string($this->options['base_uri'])
+                || strlen($this->options['base_uri']) === 0
+            ) {
                 throw new MissingConfigException('url');
             }
 

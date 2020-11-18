@@ -2,7 +2,7 @@
 
 use CuyZ\WebZ\Http\Exception\MissingConfigException;
 use CuyZ\WebZ\Http\Payload\RequestPayload;
-use CuyZ\WebZ\Http\Transformer\AutoTransformer;
+use CuyZ\WebZ\Http\Transformer\JsonTransformer;
 
 it('creates an instance', function () {
     $payload = new RequestPayload('foo', 'bar');
@@ -30,26 +30,6 @@ it('does not throw on missing url configuration if "base_uri" is set', function 
     $payload->withBaseUri('foo');
 
     expect($payload->url())->toBe('');
-});
-
-it('saves options', function () {
-    $payload = new RequestPayload('foo', 'bar');
-    $payload->withOptions(['foo' => 'bar']);
-
-    expect($payload->options())->toBe(['foo' => 'bar']);
-});
-
-it('merges options', function () {
-    $payload = new RequestPayload('foo', 'bar');
-    $payload->withOptions(['foo' => 'a', 'bar' => 'b']);
-
-    $payload->mergeOptions(['fiz' => 'c', 'bar' => 'd']);
-
-    expect($payload->options())->toBe([
-        'fiz' => 'c',
-        'bar' => 'd',
-        'foo' => 'a',
-    ]);
 });
 
 it('saves a "method" option', function () {
@@ -85,8 +65,6 @@ it('saves a "base_uri" options', function () {
 it('saves a "body" option', function () {
     $payload = new RequestPayload('foo', 'bar');
 
-    $payload->withOptions(['body' => 'foo', 'json' => 'bar']);
-
     $payload->withBody('fiz');
 
     expect($payload->options())->not->toHaveKey('json');
@@ -95,8 +73,6 @@ it('saves a "body" option', function () {
 
 it('saves a "json body" option', function () {
     $payload = new RequestPayload('foo', 'bar');
-
-    $payload->withOptions(['body' => 'foo', 'json' => 'bar']);
 
     $payload->withJson(['a' => 'b']);
 
@@ -109,7 +85,7 @@ it('sets a Transformer instance', function () {
 
     expect($payload->transformer())->toBeNull();
 
-    $transformer = new AutoTransformer();
+    $transformer = new JsonTransformer();
     $payload->withTransformer($transformer);
 
     expect($payload->transformer())->toBe($transformer);
@@ -158,27 +134,13 @@ it('saves "header" options', function () {
     ]);
 });
 
-it('overrides wrong "headers" configuration', function () {
-    $payload = new RequestPayload('foo', 'bar');
-
-    $payload->withOptions(['headers' => ['Foo' => 'test']]);
-
-    $payload->withHeader('Foo', 'a');
-
-    expect($payload->options())->toBe([
-        'headers' => [
-            'Foo' => ['a'],
-        ],
-    ]);
-});
-
 it('saves "basic auth" options without password', function () {
     $payload = new RequestPayload('foo', 'bar');
 
     $payload->withAuthBasic('fiz');
 
     expect($payload->options())->toBe([
-        'auth_basic' => 'fiz',
+        'auth' => ['fiz'],
     ]);
 });
 
@@ -188,7 +150,7 @@ it('saves "basic auth" options with password', function () {
     $payload->withAuthBasic('fiz', 'baz');
 
     expect($payload->options())->toBe([
-        'auth_basic' => 'fiz:baz',
+        'auth' => ['fiz', 'baz'],
     ]);
 });
 
@@ -198,6 +160,8 @@ it('saves "bearer auth" option', function () {
     $payload->withAuthBearer('foo');
 
     expect($payload->options())->toBe([
-        'auth_bearer' => 'foo',
+        'headers' => [
+            'Authorization' => ['Bearer foo'],
+        ],
     ]);
 });

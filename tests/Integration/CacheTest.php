@@ -9,7 +9,7 @@ use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Soap\SoapTransport;
 use CuyZ\WebZ\Tests\Fixture\Soap\Client\IntegrationTestSoapClient;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyCacheWebService;
-use Symfony\Component\HttpClient\HttpClient;
+use GuzzleHttp\Client;
 
 dataset('cache', [
     [
@@ -17,11 +17,11 @@ dataset('cache', [
         'webservice' => DummyCacheWebService::soap('foo', 10),
     ],
     [
-        'transport' => new HttpTransport(fn() => HttpClient::create()),
+        'transport' => new HttpTransport(fn() => new Client()),
         'webservice' => DummyCacheWebService::httpSingle('bar', 10),
     ],
     [
-        'transport' => new HttpTransport(fn() => HttpClient::create()),
+        'transport' => new HttpTransport(fn() => new Client()),
         'webservice' => DummyCacheWebService::httpMultiplex('bar', 10),
     ],
 ]);

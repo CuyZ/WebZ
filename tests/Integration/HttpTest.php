@@ -4,23 +4,18 @@ use CuyZ\WebZ\Core\Bus\Bus;
 use CuyZ\WebZ\Http\ClientFactory;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
-use CuyZ\WebZ\Http\Transformer\AutoTransformer;
+use CuyZ\WebZ\Http\Payload\RequestPayload;
+use CuyZ\WebZ\Http\Transformer\JsonTransformer;
 use CuyZ\WebZ\Http\Transformer\ScalarTransformer;
-use CuyZ\WebZ\Http\Transformer\Transformer;
 use CuyZ\WebZ\Tests\Fixture\FakeResult;
 use CuyZ\WebZ\Tests\Fixture\Server\HttpHandler;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWrapResultWebService;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use GuzzleHttp\Client;
 
-it('returns a parsed result', function ($factory, array $options, Transformer $transformer, $raw) {
+it('returns a parsed result', function ($factory, RequestPayload $payload, $raw) {
     $bus = Bus::builder()
         ->withTransport(new HttpTransport($factory))
         ->build();
-
-    $payload = HttpPayload::request('POST', HttpHandler::route('returnValue'))
-        ->withOptions($options)
-        ->withTransformer($transformer);
 
     $webService = new DummyWrapResultWebService($payload);
 
@@ -31,31 +26,34 @@ it('returns a parsed result', function ($factory, array $options, Transformer $t
     expect($result->raw)->toBe($raw);
 })->with(function () {
     $factories = [
-        fn() => HttpClient::create(),
-        new class implements ClientFactory
-        {
-            public function build(): HttpClientInterface
+        fn() => new Client(),
+        new class implements ClientFactory {
+            public function build(): Client
             {
-                return HttpClient::create();
+                return new Client();
             }
         },
         null
     ];
 
+    $payload = fn() => HttpPayload::request('POST', HttpHandler::route('returnValue'));
+
     $sets = [
         [
-            'options' => ['body' => 'foo', 'headers' => ['Content-Type' => 'text/plain']],
-            'transformer' => new ScalarTransformer(),
+            'payload' => $payload()->withBody('foo')
+                ->withHeader('Content-Type', 'text/plain')
+                ->withTransformer(new ScalarTransformer()),
             'result' => ['value' => 'foo'],
         ],
         [
-            'options' => ['body' => null, 'headers' => ['Content-Type' => 'text/plain']],
-            'transformer' => new ScalarTransformer(),
+            'payload' => $payload()->withBody(null)
+                ->withHeader('Content-Type', 'text/plain')
+                ->withTransformer(new ScalarTransformer()),
             'result' => ['value' => ''],
         ],
         [
-            'options' => ['json' => ['foo' => 'bar']],
-            'transformer' => new AutoTransformer(),
+            'payload' => $payload()->withJson(['foo' => 'bar'])
+                ->withTransformer(new JsonTransformer()),
             'result' => ['foo' => 'bar'],
         ],
     ];

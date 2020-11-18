@@ -7,18 +7,18 @@ use Closure;
 use CuyZ\WebZ\Core\Result\RawResult;
 use CuyZ\WebZ\Core\Transport\Transport;
 use CuyZ\WebZ\Http\Exception\EmptyMultiplexPayloadException;
-use CuyZ\WebZ\Http\Exception\HttpClientNotInstalledException;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
 use CuyZ\WebZ\Http\Payload\MultiplexPayload;
 use CuyZ\WebZ\Http\Payload\RequestPayload;
-use CuyZ\WebZ\Http\Transformer\AutoTransformer;
+use CuyZ\WebZ\Http\Transformer\JsonTransformer;
 use CuyZ\WebZ\Http\Transformer\Transformer;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use GuzzleHttp\Client;
+use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Promise\Utils;
+use Psr\Http\Message\ResponseInterface;
 
 /**
- * @psalm-type HttpFactory = Closure():HttpClientInterface
+ * @psalm-type HttpFactory = Closure():Client
  */
 final class HttpTransport implements Transport
 {
@@ -30,25 +30,15 @@ final class HttpTransport implements Transport
 
     /**
      * @param ClientFactory|Closure|null $factory
-     * @throws HttpClientNotInstalledException
      */
     public function __construct($factory = null)
     {
-        /**
-         * The `class_exists` function must no be imported
-         * or prefixed with a / so that the unit test works.
-         * @see tests/Platform/HttpTest.php
-         */
-        if (!class_exists(HttpClient::class)) {
-            throw new HttpClientNotInstalledException(); // @codeCoverageIgnore
-        }
-
         if ($factory instanceof ClientFactory) {
-            $factory = fn(): HttpClientInterface => $factory->build();
+            $factory = fn(): Client => $factory->build();
         }
 
         if (!$factory instanceof Closure) {
-            $factory = fn(): HttpClientInterface => HttpClient::create();
+            $factory = fn(): Client => new Client();
         }
 
         $this->factory = $factory;
@@ -57,7 +47,6 @@ final class HttpTransport implements Transport
     /**
      * @param HttpPayload|object $payload
      * @return RawResult
-     * @throws TransportExceptionInterface
      */
     public function send(object $payload): ?RawResult
     {
@@ -72,81 +61,54 @@ final class HttpTransport implements Transport
         return null;
     }
 
-    private function makeClient(): HttpClientInterface
-    {
-        return ($this->factory)();
-    }
-
     /**
      * @param RequestPayload $payload
      * @return RawResult
-     * @throws TransportExceptionInterface
      */
     private function sendSingleRequest(RequestPayload $payload): RawResult
     {
         $client = $this->makeClient();
 
         $raw = $client->request($payload->method(), $payload->url(), $payload->options());
-        $raw = ($payload->transformer() ?? new AutoTransformer())->toArray($raw);
+        $raw = ($payload->transformer() ?? new JsonTransformer())->toArray($raw);
 
         return RawResult::ok($raw);
     }
 
-    /**
-     * @param MultiplexPayload $payload
-     * @return RawResult
-     * @throws TransportExceptionInterface
-     */
     private function sendMultiplexRequests(MultiplexPayload $payload): RawResult
     {
         if (count($payload->requests()) === 0) {
             throw new EmptyMultiplexPayloadException();
         }
 
-        $this->prepareRequests($payload);
-
         $client = $this->makeClient();
-
-        $responses = [];
 
         /** @var Transformer[] $transformers */
         $transformers = [];
 
-        foreach ($payload->requests() as $request) {
-            $response = $client->request($request->method(), $request->url(), $request->options());
+        /** @var PromiseInterface[] $promises */
+        $promises = [];
 
-            $transformers[] = $payload->transformer() ?? $request->transformer() ?? new AutoTransformer();
-            $responses[] = $response;
+        foreach ($payload->requests() as $index => $request) {
+            $promises[$index] = $client->requestAsync($request->method(), $request->url(), $request->options());
+
+            $transformers[$index] = $payload->transformer() ?? $request->transformer() ?? new JsonTransformer();
         }
 
-        $raw = $client->stream($responses, $payload->streamTimeout());
+        /** @var ResponseInterface[] $responses */
+        $responses = Utils::unwrap($promises);
 
-        $responses = [];
+        $raw = [];
 
-        while ($raw->valid()) {
-            if ($raw->current()->isLast()) {
-                /** @var array $data */
-                $data = $raw->key()->getInfo('user_data');
-
-                $index = (int)$data['index'];
-
-                $responses[$index] = $transformers[$index]->toArray($raw->key());
-            }
-
-            $raw->next();
+        foreach ($responses as $index => $response) {
+            $raw[$index] = $transformers[$index]->toArray($response);
         }
 
-        return RawResult::ok($responses);
+        return RawResult::ok($raw);
     }
 
-    private function prepareRequests(MultiplexPayload $payload): void
+    private function makeClient(): Client
     {
-        foreach ($payload->requests() as $index => $request) {
-            $options = $request->options();
-
-            $options['user_data'] = ['index' => $index];
-
-            $request->withOptions($options);
-        }
+        return ($this->factory)();
     }
 }

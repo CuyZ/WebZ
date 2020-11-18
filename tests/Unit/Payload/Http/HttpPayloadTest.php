@@ -3,7 +3,7 @@
 use CuyZ\WebZ\Http\Payload\HttpPayload;
 use CuyZ\WebZ\Http\Payload\MultiplexPayload;
 use CuyZ\WebZ\Http\Payload\RequestPayload;
-use CuyZ\WebZ\Http\Transformer\AutoTransformer;
+use CuyZ\WebZ\Http\Transformer\JsonTransformer;
 
 it('creates a single request payload', function () {
     $payload = HttpPayload::request('foo', 'bar');
@@ -30,7 +30,7 @@ it('creates a multiplex payload with a timeout', function () {
 it('holds a Transformer instance', function (HttpPayload $payload) {
     expect($payload->transformer())->toBeNull();
 
-    $transformer = new AutoTransformer();
+    $transformer = new JsonTransformer();
 
     $payload->withTransformer($transformer);
 
