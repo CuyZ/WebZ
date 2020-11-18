@@ -43,6 +43,7 @@
         "cache/array-adapter": "^1.0",
         "cache/filesystem-adapter": "^1.0",
         "cache/void-adapter": "^1.0",
+        "guzzlehttp/psr7": "^1.7",
         "laminas/laminas-soap": "^2.8",
         "pestphp/pest": "^0.3.9",
         "phpstan/extension-installer": "^1.0",
