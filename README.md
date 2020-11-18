@@ -419,7 +419,7 @@ $ make test-unit
 
 [link-packagist]: https://packagist.org/packages/cuyz/webz
 [link-downloads]: https://packagist.org/packages/cuyz/webz
-[link-workflow]: https://github.com/Mopolo/webz-private/actions?query=workflow%3ATests
+[link-workflow]: https://github.com/CuyZ/WebZ/actions?query=workflow%3ATests
 [link-guzzle]: https://github.com/guzzle/guzzle
 [link-soap]: https://www.php.net/manual/en/soap.setup.php
 [link-psr-simple-cache]: https://packagist.org/providers/psr/simple-cache-implementation
