@@ -1,0 +1,64 @@
+{
+    "name": "cuyz/webz",
+    "description": "Library that aims to abstract calls to different WebServices (in HTTP or SOAP)",
+    "keywords": [
+        "webservice",
+        "http",
+        "soap"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/CuyZ/WebZ",
+    "authors": [
+        {
+            "name": "Nathan Boiron",
+            "email": "nathan.boiron@gmail.com",
+            "homepage": "https://github.com/Mopolo",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^7.4",
+        "ext-json": "*",
+        "psr/event-dispatcher": "^1.0",
+        "psr/simple-cache": "^1.0",
+        "symfony/http-client-contracts": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "CuyZ\\WebZ\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CuyZ\\WebZ\\Tests\\": "tests"
+        }
+    },
+    "require-dev": {
+        "ext-soap": "*",
+        "cache/array-adapter": "^1.0",
+        "cache/filesystem-adapter": "^1.0",
+        "cache/void-adapter": "^1.0",
+        "laminas/laminas-soap": "^2.8",
+        "pestphp/pest": "^0.3.9",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan": "^0.12.54",
+        "phpstan/phpstan-strict-rules": "^0.12.5",
+        "psr/http-server-handler": "^1.0",
+        "react/event-loop": "^1.1.1",
+        "react/http": "^1.1.0",
+        "symfony/event-dispatcher": "^5.1",
+        "symfony/http-client": "^4.4 | ^5.0",
+        "symfony/http-foundation": "^5.1",
+        "vimeo/psalm": "^4.0"
+    },
+    "suggest": {
+        "ext-soap": "Required for SOAP WebServices",
+        "symfony/http-client": "Required for HTTP WebServices"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
