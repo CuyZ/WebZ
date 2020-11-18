@@ -35,6 +35,12 @@ final class RequestPayload extends HttpPayload
         return $this;
     }
 
+    public function mergeOptions(array $options): self
+    {
+        $this->options = $options + $this->options;
+        return $this;
+    }
+
     public function withBaseUri(string $baseUri): self
     {
         $this->options['base_uri'] = $baseUri;

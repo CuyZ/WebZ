@@ -39,6 +39,19 @@ it('saves options', function () {
     expect($payload->options())->toBe(['foo' => 'bar']);
 });
 
+it('merges options', function () {
+    $payload = new RequestPayload('foo', 'bar');
+    $payload->withOptions(['foo' => 'a', 'bar' => 'b']);
+
+    $payload->mergeOptions(['fiz' => 'c', 'bar' => 'd']);
+
+    expect($payload->options())->toBe([
+        'fiz' => 'c',
+        'bar' => 'd',
+        'foo' => 'a',
+    ]);
+});
+
 it('saves a "method" option', function () {
     $payload = new RequestPayload('foo');
 
