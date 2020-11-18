@@ -10,7 +10,7 @@ abstract class HttpPayload
 {
     private ?Transformer $transformer = null;
 
-    public static function request(string $method, string $url): RequestPayload
+    public static function request(?string $method = null, ?string $url = null): RequestPayload
     {
         return new RequestPayload($method, $url);
     }
