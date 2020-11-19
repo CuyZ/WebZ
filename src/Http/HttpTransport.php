@@ -14,7 +14,6 @@ use CuyZ\WebZ\Http\Transformer\JsonTransformer;
 use CuyZ\WebZ\Http\Transformer\Transformer;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\Promise\Utils;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -96,7 +95,11 @@ final class HttpTransport implements Transport
         }
 
         /** @var ResponseInterface[] $responses */
-        $responses = Utils::unwrap($promises);
+        $responses = [];
+
+        foreach ($promises as $key => $promise) {
+            $responses[$key] = $promise->wait();
+        }
 
         $raw = [];
 
