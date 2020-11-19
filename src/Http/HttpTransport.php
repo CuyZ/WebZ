@@ -98,7 +98,10 @@ final class HttpTransport implements Transport
         $responses = [];
 
         foreach ($promises as $key => $promise) {
-            $responses[$key] = $promise->wait();
+            /** @var ResponseInterface $response */
+            $response = $promise->wait();
+
+            $responses[$key] = $response;
         }
 
         $raw = [];
