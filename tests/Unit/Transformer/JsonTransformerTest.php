@@ -2,14 +2,11 @@
 
 use CuyZ\WebZ\Http\Transformer\JsonTransformer;
 use GuzzleHttp\Psr7\Response;
-use Tests\Mocks;
 
 it('transforms a json response to an array', function () {
     $input = ['foo' => 'bar'];
 
-    $client = Mocks::httpClient(new Response(200, ['Content-Type' => 'application/json'], json_encode($input)));
-
-    $response = $client->request('GET', 'http://localhost');
+    $response = new Response(200, ['Content-Type' => 'application/json'], json_encode($input));
 
     $transformer = new JsonTransformer();
 
@@ -19,9 +16,7 @@ it('transforms a json response to an array', function () {
 });
 
 it('throws on invalid json', function () {
-    $client = Mocks::httpClient(new Response(200, [], 'invalid json'));
-
-    $response = $client->request('GET', 'http://localhost');
+    $response = new Response(200, [], 'invalid json');
 
     $transformer = new JsonTransformer();
 

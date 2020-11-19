@@ -2,12 +2,9 @@
 
 use CuyZ\WebZ\Http\Transformer\ScalarTransformer;
 use GuzzleHttp\Psr7\Response;
-use Tests\Mocks;
 
 it('transforms a scalar value to an array', function ($input, string $expected) {
-    $client = Mocks::httpClient(new Response(200, [], $input));
-
-    $response = $client->request('GET', 'http://localhost');
+    $response = new Response(200, [], $input);
 
     $transformer = new ScalarTransformer();
 
