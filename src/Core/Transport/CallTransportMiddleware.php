@@ -34,6 +34,7 @@ final class CallTransportMiddleware implements Middleware
 
     public function process(WebService $webService, Next $next): PromiseInterface
     {
+        $timer = Timer::start();
         $promise = null;
 
         foreach ($this->transports as $transport) {
