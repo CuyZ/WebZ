@@ -69,7 +69,7 @@ use CuyZ\WebZ\Soap\SoapTransport;
 use SoapClient;
 
 $bus = Bus::builder()
-    ->withTransport(new SoapTransport(fn(SoapPayload $payload) => new SoapClient($payload->wsdl())));
+    ->withTransport(new SoapTransport(fn(SoapPayload $p) => new SoapClient($p->wsdl())));
 ```
 
 ## Why?
