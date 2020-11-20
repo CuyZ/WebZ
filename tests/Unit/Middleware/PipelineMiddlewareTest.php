@@ -6,13 +6,15 @@ use CuyZ\WebZ\Core\Bus\Pipeline\PipelineMiddleware;
 use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Tests\Fixture\Middleware\IndexMiddleware;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
+use Tests\Mocks;
 
 it('dispatches a pipeline', function () {
     $middleware = new PipelineMiddleware(new Pipeline());
 
-    $next = new Next(fn() => Result::mockOk(['foo' => 'bar']));
+    $next = new Next(fn() => Mocks::promiseOk(['foo' => 'bar']));
 
-    $result = $middleware->process(new DummyWebService(new stdClass()), $next);
+    /** @var Result $result */
+    $result = $middleware->process(new DummyWebService(new stdClass()), $next)->wait();
 
     expect($result)->toBeInstanceOf(Result::class);
     expect($result->data())->toBe(['foo' => 'bar']);
@@ -23,7 +25,8 @@ it('executes middlewares in the right order', function (array $middlewares, arra
     $middleware = new PipelineMiddleware($pipeline);
     $webService = new DummyWebService(new stdClass());
 
-    $result = $middleware->process($webService, new Next(fn() => Result::mockOk()));
+    /** @var Result $result */
+    $result = $middleware->process($webService, new Next(fn() => Mocks::promiseOk()))->wait();
 
     expect($result)->toBeInstanceOf(Result::class);
     expect($result->data())->toBe($expectedOutput);

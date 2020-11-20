@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace CuyZ\WebZ\Core\Bus\Pipeline;
 
 use CuyZ\WebZ\Core\Bus\Middleware;
-use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Core\WebService;
+use GuzzleHttp\Promise\PromiseInterface;
 
 final class PipelineMiddleware implements Middleware
 {
@@ -16,7 +16,7 @@ final class PipelineMiddleware implements Middleware
         $this->pipeline = $pipeline;
     }
 
-    public function process(WebService $webService, Next $next): Result
+    public function process(WebService $webService, Next $next): PromiseInterface
     {
         $this->pipeline->append(new class($next) implements Middleware {
             private Next $last;
@@ -26,7 +26,7 @@ final class PipelineMiddleware implements Middleware
                 $this->last = $last;
             }
 
-            public function process(WebService $webService, Next $next): Result
+            public function process(WebService $webService, Next $next): PromiseInterface
             {
                 return ($this->last)($webService);
             }

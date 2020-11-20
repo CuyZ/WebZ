@@ -7,7 +7,8 @@ namespace CuyZ\WebZ\Soap;
 use CuyZ\WebZ\Soap\Exception\SoapExtensionNotInstalledException;
 
 it('throws if the ext-soap extension is missing', function () {
-    function extension_loaded(string $name) {
+    function extension_loaded(string $name)
+    {
         return false;
     }
 

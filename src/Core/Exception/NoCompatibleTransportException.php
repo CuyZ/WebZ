@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace CuyZ\WebZ\Core\Exception;
 
-use Exception;
+use LogicException;
 
-final class NoCompatibleTransportException extends Exception implements WebZException
+final class NoCompatibleTransportException extends LogicException implements WebZException
 {
     public function __construct(object $payload)
     {

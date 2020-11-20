@@ -3,8 +3,8 @@
 use CuyZ\WebZ\Core\Event\BeforeCallEvent;
 use CuyZ\WebZ\Core\Event\FailedCallEvent;
 use CuyZ\WebZ\Core\Event\SuccessfulCallEvent;
-use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
+use Tests\Mocks;
 
 it('creates a BeforeCallEvent', function () {
     $webService = new DummyWebService(new stdClass());
@@ -16,7 +16,7 @@ it('creates a BeforeCallEvent', function () {
 
 it('creates a SuccessfulCallEvent', function () {
     $webService = new DummyWebService(new stdClass());
-    $result = Result::mockOk();
+    $result = Mocks::resultOk();
 
     $event = new SuccessfulCallEvent($webService, $result);
 

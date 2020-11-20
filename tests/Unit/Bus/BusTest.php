@@ -4,10 +4,12 @@ use CuyZ\WebZ\Core\Bus\Bus;
 use CuyZ\WebZ\Core\Bus\Middleware;
 use CuyZ\WebZ\Core\Bus\Pipeline\Next;
 use CuyZ\WebZ\Core\Bus\Pipeline\Pipeline;
-use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Tests\Fixture\Transport\DummyTransport;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyOutputWebService;
+use GuzzleHttp\Promise\FulfilledPromise;
+use GuzzleHttp\Promise\PromiseInterface;
+use Tests\Mocks;
 
 dataset('data', [
     ['foo'],
@@ -23,11 +25,10 @@ dataset('data', [
 
 it('returns a parsed value from pipeline', function ($output) {
     $pipeline = new Pipeline([
-        new class implements Middleware
-        {
-            public function process(WebService $webService, Next $next): Result
+        new class implements Middleware {
+            public function process(WebService $webService, Next $next): PromiseInterface
             {
-                return Result::mockOk();
+                return new FulfilledPromise(Mocks::resultOk());
             }
         }
     ]);

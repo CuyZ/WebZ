@@ -63,9 +63,8 @@ dataset('soap', function () {
     ];
 
     $factories = [
-        fn (SoapPayload $payload) => new SoapClient($payload->wsdl(), $payload->options()),
-        new class implements ClientFactory
-        {
+        fn(SoapPayload $payload) => new SoapClient($payload->wsdl(), $payload->options()),
+        new class implements ClientFactory {
             public function build(SoapPayload $payload): SoapClient
             {
                 return new SoapClient($payload->wsdl(), $payload->options());

@@ -18,11 +18,7 @@ dataset('cache', [
     ],
     [
         'transport' => new HttpTransport(fn() => new Client()),
-        'webservice' => DummyCacheWebService::httpSingle('bar', 10),
-    ],
-    [
-        'transport' => new HttpTransport(fn() => new Client()),
-        'webservice' => DummyCacheWebService::httpMultiplex('bar', 10),
+        'webservice' => DummyCacheWebService::http('bar', 10),
     ],
 ]);
 

@@ -4,7 +4,6 @@ use CuyZ\WebZ\Core\Bus\Bus;
 use CuyZ\WebZ\Http\ClientFactory;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
-use CuyZ\WebZ\Http\Payload\RequestPayload;
 use CuyZ\WebZ\Http\Transformer\JsonTransformer;
 use CuyZ\WebZ\Http\Transformer\ScalarTransformer;
 use CuyZ\WebZ\Tests\Fixture\FakeResult;
@@ -12,7 +11,29 @@ use CuyZ\WebZ\Tests\Fixture\Server\HttpHandler;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWrapResultWebService;
 use GuzzleHttp\Client;
 
-it('returns a parsed result', function ($factory, RequestPayload $payload, $raw) {
+$payload = fn() => HttpPayload::request('POST', HttpHandler::route('returnValue'));
+
+$sets = [
+    [
+        'payload' => $payload()->withBody('foo')
+            ->withHeader('Content-Type', 'text/plain')
+            ->withTransformer(new ScalarTransformer()),
+        'result' => ['value' => 'foo'],
+    ],
+    [
+        'payload' => $payload()->withBody(null)
+            ->withHeader('Content-Type', 'text/plain')
+            ->withTransformer(new ScalarTransformer()),
+        'result' => ['value' => ''],
+    ],
+    [
+        'payload' => $payload()->withJson(['foo' => 'bar'])
+            ->withTransformer(new JsonTransformer()),
+        'result' => ['foo' => 'bar'],
+    ],
+];
+
+it('returns a parsed result', function ($factory, HttpPayload $payload, $raw) {
     $bus = Bus::builder()
         ->withTransport(new HttpTransport($factory))
         ->build();
@@ -24,7 +45,7 @@ it('returns a parsed result', function ($factory, RequestPayload $payload, $raw)
 
     expect($result)->toBeInstanceOf(FakeResult::class);
     expect($result->raw)->toBe($raw);
-})->with(function () {
+})->with(function () use ($sets) {
     $factories = [
         fn() => new Client(),
         new class implements ClientFactory {
@@ -36,31 +57,37 @@ it('returns a parsed result', function ($factory, RequestPayload $payload, $raw)
         null
     ];
 
-    $payload = fn() => HttpPayload::request('POST', HttpHandler::route('returnValue'));
-
-    $sets = [
-        [
-            'payload' => $payload()->withBody('foo')
-                ->withHeader('Content-Type', 'text/plain')
-                ->withTransformer(new ScalarTransformer()),
-            'result' => ['value' => 'foo'],
-        ],
-        [
-            'payload' => $payload()->withBody(null)
-                ->withHeader('Content-Type', 'text/plain')
-                ->withTransformer(new ScalarTransformer()),
-            'result' => ['value' => ''],
-        ],
-        [
-            'payload' => $payload()->withJson(['foo' => 'bar'])
-                ->withTransformer(new JsonTransformer()),
-            'result' => ['foo' => 'bar'],
-        ],
-    ];
-
     foreach ($factories as $factory) {
         foreach ($sets as $set) {
             yield ['factory' => $factory] + $set;
         }
+    }
+});
+
+it('does an async call', function () use ($sets) {
+    $bus = Bus::builder()
+        ->withTransport(new HttpTransport())
+        ->build();
+
+    $data = array_map(
+        function (array $set) {
+            return [
+                'webservice' => new DummyWrapResultWebService($set['payload']),
+                'result' => $set['result'],
+            ];
+        },
+        $sets
+    );
+
+    $promises = $bus->callAsync(
+        ...array_map(fn(array $set) => $set['webservice'], $data)
+    );
+
+    foreach ($promises as $index => $promise) {
+        /** @var FakeResult $result */
+        $result = $promise->wait();
+
+        expect($result)->toBeInstanceOf(FakeResult::class);
+        expect($result->raw)->toBe($data[$index]['result']);
     }
 });

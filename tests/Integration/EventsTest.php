@@ -10,14 +10,14 @@ use CuyZ\WebZ\Tests\Fixture\Transport\DummyTransport;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-it('dispatches events', function (Transport $transport, string $eventClass, bool $shouldFire) {
+it('dispatches events', function (Transport $transport, string $eventClass, int $expectedFires) {
     $webservice = new DummyWebService(new stdClass());
     $dispatcher = new EventDispatcher();
 
-    $hasFired = false;
+    $fires = 0;
 
-    $dispatcher->addListener($eventClass, function () use (&$hasFired) {
-        $hasFired = true;
+    $dispatcher->addListener($eventClass, function () use (&$fires) {
+        $fires++;
     });
 
     $bus = Bus::builder()
@@ -31,36 +31,36 @@ it('dispatches events', function (Transport $transport, string $eventClass, bool
         //
     }
 
-    expect($hasFired)->toBe($shouldFire);
+    expect($fires)->toBe($expectedFires);
 })->with([
     [
         'transport' => new DummyTransport(),
         'eventClass' => BeforeCallEvent::class,
-        'shouldFire' => true,
+        'expectedFires' => 1,
     ],
     [
         'transport' => new DummyTransport(),
         'eventClass' => SuccessfulCallEvent::class,
-        'shouldFire' => true,
+        'expectedFires' => 1,
     ],
     [
         'transport' => new DummyTransport(),
         'eventClass' => FailedCallEvent::class,
-        'shouldFire' => false,
+        'expectedFires' => 0,
     ],
     [
         'transport' => new DummyExceptionTransport(),
         'eventClass' => BeforeCallEvent::class,
-        'shouldFire' => true,
+        'expectedFires' => 1,
     ],
     [
         'transport' => new DummyExceptionTransport(),
         'eventClass' => SuccessfulCallEvent::class,
-        'shouldFire' => false,
+        'expectedFires' => 0,
     ],
     [
         'transport' => new DummyExceptionTransport(),
         'eventClass' => FailedCallEvent::class,
-        'shouldFire' => true,
+        'expectedFires' => 1,
     ],
 ]);

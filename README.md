@@ -19,7 +19,18 @@ $bus = Bus::builder()
     ->withEventDispatcher(new SomeEventsDispatcher())
     ->build();
 
+// Synchronous
 $foo = $bus->call(new GetFooWebService(123));
+
+// Asynchronous
+$promises = $bus->callAsync(
+    new GetFooWebService(123),
+    new GetFooWebService(456),
+);
+
+foreach ($promises as $promise) {
+    $foo = $promise->wait();
+}
 ``` 
 
 ## Installation
@@ -49,12 +60,24 @@ To use the SOAP transport you need the `soap` PHP extension.
 
 To install it see [SOAP Installation][link-soap].
 
+You can configure the SoapClient creation when instantiating the transport:
+
+```php
+use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Soap\SoapPayload;
+use CuyZ\WebZ\Soap\SoapTransport;
+use SoapClient;
+
+$bus = Bus::builder()
+    ->withTransport(new SoapTransport(fn(SoapPayload $payload) => new SoapClient($payload->wsdl())));
+```
+
 ## Why?
 
 Imagine you have to fetch some data from an external WebService.
 
 You need to instanciate some client, make the call, parse the response, cache it,
-handle exceptions, log, etc.
+handle exceptions, manually manage concurrent calls, log, etc.
 
 All this code could be repeated in multiple places and projects:
 
@@ -105,7 +128,6 @@ It can be fetched from an HTTP request:
 use Acme\Place;
 use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
-use CuyZ\WebZ\Http\Payload\RequestPayload;
 
 class GetPlace extends WebService
 {
@@ -116,7 +138,7 @@ class GetPlace extends WebService
         $this->id = $id;
     }
 
-    protected function payload(): RequestPayload
+    protected function payload(): HttpPayload
     {
         return HttpPayload::request(
             'GET',
@@ -161,9 +183,10 @@ class GetPlace extends WebService
 }
 ```
 
-You then call any WebService via a Bus and the compatible transport will call the WebService:
+You then call any WebService via the Bus and a compatible transport will call the WebService:
 
 ```php
+use Acme\Place;
 use CuyZ\WebZ\Core\Bus\Bus;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Soap\SoapTransport;
@@ -176,6 +199,20 @@ $bus = Bus::builder()
 $place = $bus->call(new GetPlace(123));
 
 echo $place->name();
+
+// You can also call multiple webservices in concurrency
+// provided that they use the same type of payload:
+$promises = $bus->callAsync(
+    new GetPlace(123),
+    new GetPlace(456),
+);
+
+foreach ($promises as $promise) {
+    /** @var Place $place */
+    $place = $promise->wait();
+
+    echo $place->name();
+}
 ```
 
 In the end the `GetPlace` class looks transport agnostic and can be reused anywhere
@@ -391,6 +428,52 @@ $bus = Bus::builder()
 
 $foo = $bus->call(new GetFooWebService(123));
 ``` 
+
+### Async transport
+
+A transport can implement the `\CuyZ\WebZ\Core\Transport\AsyncTransport` interface
+to send payloads asynchronously.
+
+```php
+use CuyZ\WebZ\Core\Result\RawResult;
+use CuyZ\WebZ\Core\Transport\AsyncTransport;use GuzzleHttp\Promise\PromiseInterface;
+
+class MyTransport implements AsyncTransport
+{
+    public function send(object $payload): ?RawResult
+    {
+        // If the payload is not supported by this transport
+        // it must return null
+        if (!$payload instanceof MyPayload) {
+            return null;
+        }
+
+        try {
+            $raw = $this->someService->call($payload->someMethod(...));
+
+            // For a successful call
+            // $raw must be an array
+            return RawResult::ok($raw);
+        } catch (\Exception $e) {
+            // For a failed call
+            return RawResult::err($e);
+        }
+    }
+
+    public function sendAsync(object $payload, string $payloadGroupHash): ?PromiseInterface
+    {
+        // If the payload is not supported by this transport
+        // it must return null
+        if (!$payload instanceof MyPayload) {
+            return null;
+        }
+
+        return $this->someService
+            ->call($payload->someMethod(...))
+            ->then(fn(SomResponse $res) => RawResult::ok($res->toArray()));
+    }
+}
+```
 
 ### Contributing
 

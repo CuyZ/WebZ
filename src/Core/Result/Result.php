@@ -73,29 +73,4 @@ final class Result
         $result->comesFromCache = true;
         return $result;
     }
-
-    /**
-     * @param array $data
-     * @return self
-     *
-     * @internal
-     * @codeCoverageIgnore
-     */
-    public static function mockOk(array $data = []): self
-    {
-        return new self(RawResult::ok($data), Timer::zero());
-    }
-
-    /**
-     * @param Exception $exception
-     * @param array $data
-     * @return self
-     *
-     * @internal
-     * @codeCoverageIgnore
-     */
-    public static function mockErr(Exception $exception, array $data = []): self
-    {
-        return new self(RawResult::err($exception, $data), Timer::zero());
-    }
 }

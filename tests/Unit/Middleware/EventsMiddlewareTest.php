@@ -5,35 +5,65 @@ use CuyZ\WebZ\Core\Event\BeforeCallEvent;
 use CuyZ\WebZ\Core\Event\EventsMiddleware;
 use CuyZ\WebZ\Core\Event\FailedCallEvent;
 use CuyZ\WebZ\Core\Event\SuccessfulCallEvent;
-use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Tests\Mocks;
 
-it('dispatches events', function (Next $next, string $eventClass, bool $shouldFire) {
+it('dispatches events', function (Next $next, string $eventClass, int $expectedFires) {
     $webservice = new DummyWebService(new stdClass());
     $dispatcher = new EventDispatcher();
 
-    $hasFired = false;
+    $fires = 0;
 
-    $dispatcher->addListener($eventClass, function () use (&$hasFired) {
-        $hasFired = true;
+    $dispatcher->addListener($eventClass, function () use (&$fires) {
+        $fires++;
     });
 
     $middleware = new EventsMiddleware($dispatcher);
 
     try {
-        $middleware->process($webservice, $next);
-    } catch (\Exception $e) {
+        $middleware->process($webservice, $next)->wait();
+    } catch (Exception $e) {
         //
     }
 
-    expect($hasFired)->toBe($shouldFire);
+    expect($fires)->toBe($expectedFires);
 })->with([
-    [new Next(fn () => Result::mockOk()), BeforeCallEvent::class, true],
-    [new Next(fn () => Result::mockOk()), FailedCallEvent::class, false],
-    [new Next(fn () => Result::mockOk()), SuccessfulCallEvent::class, true],
+    [
+        'next' => new Next(fn() => Mocks::promiseOk()),
+        'event' => BeforeCallEvent::class,
+        'fires' => 1,
+    ],
+    [
+        'next' => new Next(fn() => Mocks::promiseOk()),
+        'event' => FailedCallEvent::class,
+        'fires' => 0,
+    ],
+    [
+        'next' => new Next(fn() => Mocks::promiseOk()),
+        'event' => SuccessfulCallEvent::class,
+        'fires' => 1,
+    ],
 
-    [new Next(function () { throw new Exception(); }), BeforeCallEvent::class, true],
-    [new Next(function () { throw new Exception(); }), FailedCallEvent::class, true],
-    [new Next(function () { throw new Exception(); }), SuccessfulCallEvent::class, false],
+    [
+        'next' => new Next(function () {
+            throw new Exception();
+        }),
+        'event' => BeforeCallEvent::class,
+        'fires' => 1,
+    ],
+    [
+        'next' => new Next(function () {
+            throw new Exception();
+        }),
+        'event' => FailedCallEvent::class,
+        'fires' => 1,
+    ],
+    [
+        'next' => new Next(function () {
+            throw new Exception();
+        }),
+        'event' => SuccessfulCallEvent::class,
+        'fires' => 0,
+    ],
 ]);

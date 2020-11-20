@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace CuyZ\WebZ\Core\Bus;
 
 use CuyZ\WebZ\Core\Bus\Pipeline\Pipeline;
-use CuyZ\WebZ\Core\Exception\WebZException;
+use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Core\WebService;
-use Exception;
+use GuzzleHttp\Promise\PromiseInterface;
 
 final class Bus
 {
@@ -28,8 +28,38 @@ final class Bus
      */
     public function call(WebService $webService)
     {
-        $result = $this->pipeline->dispatch($webService);
+        return $this->dispatch($webService)->wait();
+    }
 
-        return $webService->parse($result->data());
+    /**
+     * @param WebService ...$webServices
+     * @return PromiseInterface[]
+     */
+    public function callAsync(WebService ...$webServices)
+    {
+        if (count($webServices) === 0) {
+            throw new NoWebServiceException();
+        }
+
+        $payloads = array_map(fn(WebService $webService): string => $webService->getPayloadHash(), $webServices);
+        $payloads = implode('', $payloads);
+
+        $payloadGroupId = sha1(serialize($payloads));
+
+        return array_map(
+            function (WebService $webService) use ($payloadGroupId): PromiseInterface {
+                $webService->setPayloadGroupHash($payloadGroupId);
+
+                return $this->dispatch($webService);
+            },
+            $webServices
+        );
+    }
+
+    private function dispatch(WebService $webService): PromiseInterface
+    {
+        return $this->pipeline
+            ->dispatch($webService)
+            ->then(/** @return mixed */ fn(Result $result) => $webService->parse($result->data()));
     }
 }

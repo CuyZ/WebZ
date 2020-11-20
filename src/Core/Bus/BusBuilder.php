@@ -65,10 +65,6 @@ final class BusBuilder
 
     public function build(): Bus
     {
-        if (count($this->transports) === 0) {
-            throw new NoTransportException();
-        }
-
         $pipeline = new Pipeline();
 
         $pipeline->append(new HandleExceptionsMiddleware());

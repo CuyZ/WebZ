@@ -7,6 +7,7 @@ use CuyZ\WebZ\Core\Bus\Middleware;
 use CuyZ\WebZ\Core\Bus\Pipeline\Next;
 use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Core\WebService;
+use GuzzleHttp\Promise\PromiseInterface;
 
 final class IndexMiddleware implements Middleware
 {
@@ -17,13 +18,13 @@ final class IndexMiddleware implements Middleware
         $this->index = $index;
     }
 
-    public function process(WebService $webService, Next $next): Result
+    public function process(WebService $webService, Next $next): PromiseInterface
     {
-        $result = $next($webService);
+        return $next($webService)->then(function (Result $result) {
+            $raw = $result->data();
+            $raw[] = $this->index;
 
-        $raw = $result->data();
-        $raw[] = $this->index;
-
-        return $result->withData($raw);
+            return $result->withData($raw);
+        });
     }
 }

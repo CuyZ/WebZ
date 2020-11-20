@@ -30,24 +30,11 @@ final class DummyCacheWebService extends WebService implements WithCache
         );
     }
 
-    public static function httpSingle(string $input, int $cacheLifetime): self
+    public static function http(string $input, int $cacheLifetime): self
     {
         return new self(
             HttpPayload::request('GET', HttpHandler::route('random', ['input' => $input]))
                 ->withTransformer(new ScalarTransformer()),
-            $cacheLifetime
-        );
-    }
-
-    public static function httpMultiplex(string $input, int $cacheLifetime): self
-    {
-        $payload = HttpPayload::multiplex()
-            ->with(HttpPayload::request('GET', HttpHandler::route('random', ['input' => $input])))
-            ->with(HttpPayload::request('GET', HttpHandler::route('random', ['input' => $input])))
-            ->withTransformer(new ScalarTransformer());
-
-        return new self(
-            $payload,
             $cacheLifetime
         );
     }

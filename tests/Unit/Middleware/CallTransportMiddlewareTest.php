@@ -4,16 +4,23 @@ use CuyZ\WebZ\Core\Bus\Pipeline\Next;
 use CuyZ\WebZ\Core\Exception\NoCompatibleTransportException;
 use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Core\Transport\CallTransportMiddleware;
+use CuyZ\WebZ\Core\Transport\NoTransportException;
 use CuyZ\WebZ\Tests\Fixture\Transport\DummyExceptionTransport;
 use CuyZ\WebZ\Tests\Fixture\Transport\DummyIncompatibleTransport;
 use CuyZ\WebZ\Tests\Fixture\Transport\DummyTransport;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
 
+it('throws when no transport is present', function () {
+    new CallTransportMiddleware([]);
+})->throws(NoTransportException::class);
+
 it('throws when no transport is found', function () {
     $webservice = new DummyWebService(new stdClass());
-    $middleware = new CallTransportMiddleware([]);
+    $middleware = new CallTransportMiddleware([
+        new DummyIncompatibleTransport(),
+    ]);
 
-    $next = new Next(fn () => null);
+    $next = new Next(fn() => null);
 
     $middleware->process($webservice, $next);
 })->throws(NoCompatibleTransportException::class);
@@ -26,9 +33,10 @@ it('calls the correct transport', function () {
         new DummyTransport(['foo' => 'bar']),
     ]);
 
-    $next = new Next(fn () => null);
+    $next = new Next(fn() => null);
 
-    $result = $middleware->process($webservice, $next);
+    /** @var Result $result */
+    $result = $middleware->process($webservice, $next)->wait();
 
     expect($result)->toBeInstanceOf(Result::class);
     expect($result->exception())->toBeNull();
@@ -42,9 +50,10 @@ it('returns an error result on transport error', function () {
         new DummyExceptionTransport('abc'),
     ]);
 
-    $next = new Next(fn () => null);
+    $next = new Next(fn() => null);
 
-    $result = $middleware->process($webservice, $next);
+    /** @var Result $result */
+    $result = $middleware->process($webservice, $next)->wait();
 
     expect($result)->toBeInstanceOf(Result::class);
     expect($result->exception())->toBeInstanceOf(Exception::class);

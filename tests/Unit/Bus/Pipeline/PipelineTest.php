@@ -8,6 +8,8 @@ use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Tests\Fixture\Middleware\IndexMiddleware;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
+use GuzzleHttp\Promise\PromiseInterface;
+use Tests\Mocks;
 
 it('throws for an empty pipeline', function () {
     $pipeline = new Pipeline();
@@ -19,15 +21,16 @@ it('dispatches a webService', function () {
     $webService = new DummyWebService(new stdClass());
 
     $middleware = new class implements Middleware {
-        public function process(WebService $webService, Next $next): Result
+        public function process(WebService $webService, Next $next): PromiseInterface
         {
-            return Result::mockOk($webService->parse(['foo' => 'bar']));
+            return Mocks::promiseOk($webService->parse(['foo' => 'bar']));
         }
     };
 
     $pipeline = new Pipeline([$middleware]);
 
-    $result = $pipeline->dispatch($webService);
+    /** @var Result $result */
+    $result = $pipeline->dispatch($webService)->wait();
 
     expect($result)->toBeInstanceOf(Result::class);
     expect($result->data())->toBe(['foo' => 'bar']);
@@ -38,15 +41,16 @@ it('executes middlewares in the right order', function (array $middlewares, arra
     $pipeline = new Pipeline($middlewares);
 
     $last = new class implements Middleware {
-        public function process(WebService $webService, Next $next): Result
+        public function process(WebService $webService, Next $next): PromiseInterface
         {
-            return Result::mockOk($webService->parse([]));
+            return Mocks::promiseOk($webService->parse([]));
         }
     };
 
     $pipeline->append($last);
 
-    $result = $pipeline->dispatch($webService);
+    /** @var Result $result */
+    $result = $pipeline->dispatch($webService)->wait();
 
     expect($result)->toBeInstanceOf(Result::class);
     expect($result->data())->toBe($expectedOutput);
@@ -84,15 +88,16 @@ it('appends a middleware', function () {
     $pipeline->append(new IndexMiddleware(4));
 
     $last = new class implements Middleware {
-        public function process(WebService $webService, Next $next): Result
+        public function process(WebService $webService, Next $next): PromiseInterface
         {
-            return Result::mockOk($webService->parse([]));
+            return Mocks::promiseOk($webService->parse([]));
         }
     };
 
     $pipeline->append($last);
 
-    $result = $pipeline->dispatch($webService);
+    /** @var Result $result */
+    $result = $pipeline->dispatch($webService)->wait();
 
     expect($result)->toBeInstanceOf(Result::class);
     expect($result->data())->toBe([4, 0, 1, 2, 3]);
@@ -111,15 +116,16 @@ it('prepends a middleware', function () {
     $pipeline->prepend(new IndexMiddleware(4));
 
     $last = new class implements Middleware {
-        public function process(WebService $webService, Next $next): Result
+        public function process(WebService $webService, Next $next): PromiseInterface
         {
-            return Result::mockOk($webService->parse([]));
+            return Mocks::promiseOk($webService->parse([]));
         }
     };
 
     $pipeline->append($last);
 
-    $result = $pipeline->dispatch($webService);
+    /** @var Result $result */
+    $result = $pipeline->dispatch($webService)->wait();
 
     expect($result)->toBeInstanceOf(Result::class);
     expect($result->data())->toBe([0, 1, 2, 3, 4]);

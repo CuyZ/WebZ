@@ -7,6 +7,8 @@ use CuyZ\WebZ\Core\Bus\Middleware;
 use CuyZ\WebZ\Core\Bus\Pipeline\Next;
 use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Core\WebService;
+use GuzzleHttp\Promise\FulfilledPromise;
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\SimpleCache\CacheInterface;
 
 final class SimpleCacheMiddleware implements Middleware
@@ -20,7 +22,7 @@ final class SimpleCacheMiddleware implements Middleware
         $this->skipCorruptCacheEntries = $skipCorruptCacheEntries;
     }
 
-    public function process(WebService $webService, Next $next): Result
+    public function process(WebService $webService, Next $next): PromiseInterface
     {
         if (!$webService instanceof WithCache) {
             return $next($webService);
@@ -45,15 +47,16 @@ final class SimpleCacheMiddleware implements Middleware
                 throw new CorruptCacheEntryException($hash);
             }
 
-            return $result->markAsComingFromCache();
+            return new FulfilledPromise($result->markAsComingFromCache());
         }
 
-        $result = $next($webService);
+        return $next($webService)
+            ->then(function (Result $result) use ($ttl, $hash): Result {
+                if (!$result->isFromCache()) {
+                    $this->cache->set($hash, $result, $ttl);
+                }
 
-        if (!$result->isFromCache()) {
-            $this->cache->set($hash, $result, $ttl);
-        }
-
-        return $result;
+                return $result;
+            });
     }
 }

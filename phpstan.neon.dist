@@ -1,5 +1,9 @@
 parameters:
-	level: 8
-	checkMissingIterableValueType: false
-	paths:
-		- src
+    level: 8
+    checkMissingIterableValueType: false
+    paths:
+        - src
+
+    earlyTerminatingMethodCalls:
+        CuyZ\WebZ\Core\Event\EventsMiddleware:
+            - dispatchError
