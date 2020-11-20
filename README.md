@@ -436,31 +436,17 @@ to send payloads asynchronously.
 
 ```php
 use CuyZ\WebZ\Core\Result\RawResult;
-use CuyZ\WebZ\Core\Transport\AsyncTransport;use GuzzleHttp\Promise\PromiseInterface;
+use CuyZ\WebZ\Core\Transport\AsyncTransport;
+use GuzzleHttp\Promise\PromiseInterface;
 
 class MyTransport implements AsyncTransport
 {
     public function send(object $payload): ?RawResult
     {
-        // If the payload is not supported by this transport
-        // it must return null
-        if (!$payload instanceof MyPayload) {
-            return null;
-        }
-
-        try {
-            $raw = $this->someService->call($payload->someMethod(...));
-
-            // For a successful call
-            // $raw must be an array
-            return RawResult::ok($raw);
-        } catch (\Exception $e) {
-            // For a failed call
-            return RawResult::err($e);
-        }
+        return $this->sendAsync($payload, null)->wait();
     }
 
-    public function sendAsync(object $payload, string $payloadGroupHash): ?PromiseInterface
+    public function sendAsync(object $payload, ?string $payloadGroupHash): ?PromiseInterface
     {
         // If the payload is not supported by this transport
         // it must return null
@@ -470,6 +456,7 @@ class MyTransport implements AsyncTransport
 
         return $this->someService
             ->call($payload->someMethod(...))
+            // The promise must return an instance of RawResult
             ->then(fn(SomResponse $res) => RawResult::ok($res->toArray()));
     }
 }

@@ -23,7 +23,7 @@ final class DummyExceptionTransport implements Transport, AsyncTransport
         throw new Exception($this->message);
     }
 
-    public function sendAsync(object $payload, string $payloadGroupHash): ?PromiseInterface
+    public function sendAsync(object $payload, ?string $payloadGroupHash): ?PromiseInterface
     {
         throw new Exception($this->message);
     }
