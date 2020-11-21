@@ -91,3 +91,48 @@ it('does an async call', function () use ($sets) {
         expect($result->raw)->toBe($data[$index]['result']);
     }
 });
+
+it('contains the request and response traces', function () {
+    $payload = HttpPayload::request()
+        ->withMethod('POST')
+        ->withBaseUri(HttpHandler::URI)
+        ->withHeader('X-Foo', 'bar')
+        ->withHeader('User-Agent', 'cuyz/webz')
+        ->withAuthBearer('abcd1234')
+        ->withQuery('route', 'returnValue')
+        ->withQuery('a', 'b')
+        ->withJson(['foo' => 'bar'])
+        ->withTransformer(new JsonTransformer());
+
+    $transport = new HttpTransport();
+
+    $result = $transport->send($payload);
+
+    expect($result->requestTrace())->toBe(<<<REQUEST
+POST /http?route=returnValue&a=b HTTP/1.1
+Content-Length: 13
+Content-Type: application/json
+Host: localhost:8080
+X-Foo: bar
+User-Agent: cuyz/webz
+Authorization: Bearer abcd1234
+
+{"foo":"bar"}
+REQUEST
+);
+
+    $date = (new DateTime('now', new DateTimeZone('GMT')))->format('r');
+    $date = str_replace('+0000', 'GMT', $date);
+
+    expect($result->responseTrace())->toBe(<<<RESPONSE
+HTTP/1.1 200 OK
+Content-Type: application/json
+Server: ReactPHP/1
+Date: $date
+Content-Length: 13
+Connection: close
+
+{"foo":"bar"}
+RESPONSE
+);
+});

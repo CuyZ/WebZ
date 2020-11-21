@@ -7,10 +7,14 @@ use Closure;
 use CuyZ\WebZ\Core\Result\RawResult;
 use CuyZ\WebZ\Core\Transport\AsyncTransport;
 use CuyZ\WebZ\Core\Transport\Transport;
+use CuyZ\WebZ\Http\Formatter\HttpMessageFormatter;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
 use CuyZ\WebZ\Http\Transformer\JsonTransformer;
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Promise\PromiseInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -27,6 +31,8 @@ final class HttpTransport implements Transport, AsyncTransport
     /** @var Client[] */
     private array $clients = [];
 
+    private HttpMessageFormatter $formatter;
+
     /**
      * @param ClientFactory|Closure|null $factory
      */
@@ -41,6 +47,7 @@ final class HttpTransport implements Transport, AsyncTransport
         }
 
         $this->factory = $factory;
+        $this->formatter = new HttpMessageFormatter();
     }
 
     /**
@@ -70,6 +77,28 @@ final class HttpTransport implements Transport, AsyncTransport
 
     private function sendRequest(HttpPayload $payload, Client $client): PromiseInterface
     {
+        /** @var array $config */
+        $config = $client->getConfig();
+
+        /** @var HandlerStack|callable $handler */
+        $handler = $config['handler'] ?? HandlerStack::create();
+
+        if (!$handler instanceof HandlerStack) {
+            $handler = HandlerStack::create($handler);
+        }
+
+        $request = null;
+
+        $handler->push(Middleware::tap(
+            function (RequestInterface $req) use (&$request): void {
+                $request = $req;
+            }
+        ));
+
+        $config['handler'] = $handler;
+
+        $client = new Client($config);
+
         $promise = $client->requestAsync(
             $payload->method(),
             $payload->url(),
@@ -78,10 +107,17 @@ final class HttpTransport implements Transport, AsyncTransport
 
         return $promise
             ->then(
-                function (ResponseInterface $response) use ($payload): RawResult {
+                function (ResponseInterface $response) use ($request, $payload): RawResult {
                     $data = ($payload->transformer() ?? new JsonTransformer())->toArray($response);
 
-                    return RawResult::ok($data);
+                    $raw = RawResult::ok($data)
+                        ->withResponseTrace($this->formatter->formatResponse($response));
+
+                    if ($request instanceof RequestInterface) {
+                        return $raw->withRequestTrace($this->formatter->formatRequest($request));
+                    }
+
+                    return $raw;
                 }
             );
     }
