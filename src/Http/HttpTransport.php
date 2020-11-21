@@ -77,18 +77,23 @@ final class HttpTransport implements Transport, AsyncTransport
 
     private function sendRequest(HttpPayload $payload, Client $client): PromiseInterface
     {
-        /** @var array $config */
+        /**
+         * @psalm-suppress DeprecatedMethod
+         * @var array $config
+         */
         $config = $client->getConfig();
 
         /** @var HandlerStack|callable $handler */
         $handler = $config['handler'] ?? HandlerStack::create();
 
         if (!$handler instanceof HandlerStack) {
+            /** @psalm-suppress MixedArgumentTypeCoercion */
             $handler = HandlerStack::create($handler);
         }
 
         $request = null;
 
+        /** @psalm-suppress MixedArgumentTypeCoercion */
         $handler->push(Middleware::tap(
             function (RequestInterface $req) use (&$request): void {
                 $request = $req;
