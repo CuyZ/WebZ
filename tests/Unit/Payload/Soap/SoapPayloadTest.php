@@ -1,14 +1,14 @@
 <?php
 /** @noinspection PhpComposerExtensionStubsInspection */
 
-use CuyZ\WebZ\Soap\Exception\MissingSoapMethodException;
+use CuyZ\WebZ\Soap\Exception\MissingSoapActionException;
 use CuyZ\WebZ\Soap\SoapPayload;
 
 it('creates a wsdl mode payload', function () {
     $payload = SoapPayload::forWsdl('test.wsdl', 'foo');
 
     expect($payload->wsdl())->toBe('test.wsdl');
-    expect($payload->method())->toBe('foo');
+    expect($payload->action())->toBe('foo');
     expect($payload->options())->toBe(SoapPayload::DEFAULT_OPTIONS);
 });
 
@@ -16,7 +16,7 @@ it('creates a non-wsdl mode payload', function () {
     $payload = SoapPayload::forNonWsdl('foo', 'bar', 'fiz');
 
     expect($payload->wsdl())->toBeNull();
-    expect($payload->method())->toBe('fiz');
+    expect($payload->action())->toBe('fiz');
 
     $options = $payload->options();
 
@@ -85,18 +85,44 @@ it('sets the call arguments', function (SoapPayload $payload) {
 ]);
 
 it('creates a payload without a SOAP method', function (SoapPayload $payload) {
-    $payload->method();
+    $payload->action();
 })->with([
     SoapPayload::forWsdl('test.xsdl'),
     SoapPayload::forNonWsdl('foo', 'bar'),
-])->throws(MissingSoapMethodException::class);
+])->throws(MissingSoapActionException::class);
 
-it('overrides the SOAP method', function (SoapPayload $payload) {
-    expect($payload->method())->toBe('foo');
+it('overrides the SOAP action', function (SoapPayload $payload) {
+    expect($payload->action())->toBe('foo');
 
-    $payload->withMethod('fiz');
+    $payload->withAction('fiz');
 
-    expect($payload->method())->toBe('fiz');
+    expect($payload->action())->toBe('fiz');
+})->with([
+    SoapPayload::forWsdl('test.xsdl', 'foo'),
+    SoapPayload::forNonWsdl('foo', 'bar', 'foo'),
+]);
+
+it('sets SOAP headers', function (SoapPayload $payload) {
+    $headers = [
+        new \SoapHeader('http://localhost', 'Foo', 'a'),
+        new \SoapHeader('http://localhost', 'Bar', 'b'),
+    ];
+
+    $payload->withHeader($headers[0]);
+    $payload->withHeader($headers[1]);
+
+    expect($payload->headers())->toBe($headers);
+})->with([
+    SoapPayload::forWsdl('test.xsdl', 'foo'),
+    SoapPayload::forNonWsdl('foo', 'bar', 'foo'),
+]);
+
+it('sets HTTP method', function (SoapPayload $payload) {
+    expect($payload->httpMethod())->toBe('POST');
+
+    $payload->withHttpMethod('GET');
+
+    expect($payload->httpMethod())->toBe('GET');
 })->with([
     SoapPayload::forWsdl('test.xsdl', 'foo'),
     SoapPayload::forNonWsdl('foo', 'bar', 'foo'),

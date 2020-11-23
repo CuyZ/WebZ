@@ -12,8 +12,9 @@ use SoapFault;
 final class FakeSoapServerClass
 {
     public const URI = TestServer::DOMAIN . '/soap';
+    public const WSDL_URI = self::URI . '?wsdl';
     public const TMP_DIR = __DIR__ . '/../../../../tmp';
-    public const WSDL = self::TMP_DIR . '/wsdl.xml';
+    public const WSDL_FILE = self::TMP_DIR . '/wsdl.xml';
 
     /**
      * @param mixed $value

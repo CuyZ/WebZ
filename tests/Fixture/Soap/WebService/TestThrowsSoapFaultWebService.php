@@ -20,7 +20,7 @@ final class TestThrowsSoapFaultWebService extends WebService
 
     protected function payload(): object
     {
-        return SoapPayload::forWsdl(FakeSoapServerClass::WSDL, 'throwSoapFault')
+        return SoapPayload::forWsdl(FakeSoapServerClass::WSDL_URI, 'throwSoapFault')
             ->withArguments([$this->faultCode, $this->faultString]);
     }
 

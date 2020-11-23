@@ -25,7 +25,7 @@ final class DummyCacheWebService extends WebService implements WithCache
     public static function soap(string $input, int $cacheLifetime): self
     {
         return new self(
-            SoapPayload::forWsdl(FakeSoapServerClass::WSDL, 'randomValue')->withArguments([$input]),
+            SoapPayload::forWsdl(FakeSoapServerClass::WSDL_URI, 'randomValue')->withArguments([$input]),
             $cacheLifetime
         );
     }

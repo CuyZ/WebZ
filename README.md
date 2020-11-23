@@ -60,16 +60,17 @@ To use the SOAP transport you need the `soap` PHP extension.
 
 To install it see [SOAP Installation][link-soap].
 
-You can configure the SoapClient creation when instantiating the transport:
+SOAP requests are sent using Guzzle (to allow for async SOAP calls).
+
+You can configure the Guzzle client creation when instanciating the transport:
 
 ```php
 use CuyZ\WebZ\Core\Bus\Bus;
-use CuyZ\WebZ\Soap\SoapPayload;
 use CuyZ\WebZ\Soap\SoapTransport;
-use SoapClient;
+use GuzzleHttp\Client;
 
 $bus = Bus::builder()
-    ->withTransport(new SoapTransport(fn(SoapPayload $p) => new SoapClient($p->wsdl())));
+    ->withTransport(SoapTransport::withFactory(fn() => new Client()));
 ```
 
 ## Why?
@@ -172,7 +173,7 @@ class GetPlace extends WebService
     protected function payload(): SoapPayload
     {
         return SoapPayload::forWsdl('https://my-example.com/api/wsdl.xml')
-            ->withMethod('getPlace')
+            ->withAction('getPlace')
             ->withArguments([$this->id]);
     }
 

@@ -1,7 +1,7 @@
 <?php
 
 use CuyZ\WebZ\Core\Bus\Bus;
-use CuyZ\WebZ\Http\ClientFactory;
+use CuyZ\WebZ\Core\Guzzle\GuzzleClientFactory;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
 use CuyZ\WebZ\Http\Transformer\JsonTransformer;
@@ -48,8 +48,8 @@ it('returns a parsed result', function ($factory, HttpPayload $payload, $raw) {
 })->with(function () use ($sets) {
     $factories = [
         fn() => new Client(),
-        new class implements ClientFactory {
-            public function build(): Client
+        new class implements GuzzleClientFactory {
+            public function build(?string $payloadGroupHash): Client
             {
                 return new Client();
             }

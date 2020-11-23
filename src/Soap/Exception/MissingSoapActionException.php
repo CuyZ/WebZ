@@ -6,10 +6,10 @@ namespace CuyZ\WebZ\Soap\Exception;
 use CuyZ\WebZ\Core\Exception\WebZException;
 use LogicException;
 
-final class MissingSoapMethodException extends LogicException implements WebZException
+final class MissingSoapActionException extends LogicException implements WebZException
 {
     public function __construct()
     {
-        parent::__construct('The SOAP method is missing from the payload', 1605304939);
+        parent::__construct('The SOAP action is missing from the payload', 1605304939);
     }
 }

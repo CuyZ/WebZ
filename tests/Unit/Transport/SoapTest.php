@@ -1,28 +1,17 @@
 <?php
 
 use CuyZ\WebZ\Core\Result\RawResult;
-use CuyZ\WebZ\Soap\ClientFactory;
-use CuyZ\WebZ\Soap\Exception\MissingSoapMethodException;
+use CuyZ\WebZ\Soap\Exception\MissingSoapActionException;
 use CuyZ\WebZ\Soap\SoapPayload;
 use CuyZ\WebZ\Soap\SoapTransport;
-use CuyZ\WebZ\Tests\Fixture\Soap\Client\UnitTestSoapClient;
+use CuyZ\WebZ\Tests\Fixture\Soap\FakeSoapSender;
 
-it('returns null for an incompatible payload', function ($factory) {
-    $transport = new SoapTransport($factory);
+it('returns null for an incompatible payload', function () {
+    $transport = new SoapTransport();
 
     expect($transport->send(new stdClass()))->toBeNull();
-})->with([
-    null,
-
-    fn(SoapPayload $payload) => new UnitTestSoapClient(),
-
-    new class implements ClientFactory {
-        public function build(SoapPayload $payload): SoapClient
-        {
-            return new UnitTestSoapClient();
-        }
-    },
-]);
+    expect($transport->sendAsync(new stdClass(), null))->toBeNull();
+});
 
 it('returns a soap result', function (SoapPayload $payload, array $data, ?string $exceptionClass) {
     $responses = [
@@ -30,7 +19,7 @@ it('returns a soap result', function (SoapPayload $payload, array $data, ?string
         'err' => new SoapFault('foo', 'bar'),
     ];
 
-    $transport = new SoapTransport(fn(SoapPayload $payload) => new UnitTestSoapClient($responses));
+    $transport = new SoapTransport(new FakeSoapSender($responses));
 
     $raw = $transport->send($payload);
 
@@ -67,10 +56,10 @@ it('returns a soap result', function (SoapPayload $payload, array $data, ?string
 ]);
 
 it('throws on un-configured SOAP method', function (SoapPayload $payload) {
-    $transport = new SoapTransport(fn(SoapPayload $payload) => new UnitTestSoapClient());
+    $transport = new SoapTransport(new FakeSoapSender());
 
     $transport->send($payload);
 })->with([
     SoapPayload::forNonWsdl('test', 'test'),
     SoapPayload::forWsdl('test.wsdl'),
-])->throws(MissingSoapMethodException::class);
+])->throws(MissingSoapActionException::class);

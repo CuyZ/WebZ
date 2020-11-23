@@ -1,6 +1,6 @@
 <?php
 
-use CuyZ\WebZ\Http\ClientFactory;
+use CuyZ\WebZ\Core\Guzzle\GuzzleClientFactory;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
 use CuyZ\WebZ\Http\Transformer\ScalarTransformer;
@@ -14,13 +14,14 @@ it('returns null for an incompatible payload', function ($clientFactory) {
     $transport = new HttpTransport($clientFactory);
 
     expect($transport->send(new stdClass()))->toBeNull();
+    expect($transport->sendAsync(new stdClass(), null))->toBeNull();
 })->with([
     null,
 
     fn() => new Client(),
 
-    new class implements ClientFactory {
-        public function build(): Client
+    new class implements GuzzleClientFactory {
+        public function build(?string $payloadGroupHash): Client
         {
             return new Client();
         }

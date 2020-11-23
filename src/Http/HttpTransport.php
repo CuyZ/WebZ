@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace CuyZ\WebZ\Http;
 
 use Closure;
+use CuyZ\WebZ\Core\Guzzle\AutoFactory;
+use CuyZ\WebZ\Core\Guzzle\GuzzleClientFactory;
 use CuyZ\WebZ\Core\Result\RawResult;
 use CuyZ\WebZ\Core\Transport\AsyncTransport;
 use CuyZ\WebZ\Core\Transport\Transport;
@@ -17,36 +19,17 @@ use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * @psalm-type HttpFactory = Closure():Client
- */
 final class HttpTransport implements Transport, AsyncTransport
 {
-    /**
-     * @phpstan-var Closure
-     * @psalm-var HttpFactory
-     */
-    private $factory;
-
-    /** @var Client[] */
-    private array $clients = [];
-
+    private GuzzleClientFactory $factory;
     private HttpMessageFormatter $formatter;
 
     /**
-     * @param ClientFactory|Closure|null $factory
+     * @param GuzzleClientFactory|Closure|null $factory
      */
     public function __construct($factory = null)
     {
-        if ($factory instanceof ClientFactory) {
-            $factory = fn(): Client => $factory->build();
-        }
-
-        if (!$factory instanceof Closure) {
-            $factory = fn(): Client => new Client();
-        }
-
-        $this->factory = $factory;
+        $this->factory = new AutoFactory($factory);
         $this->formatter = new HttpMessageFormatter();
     }
 
@@ -60,7 +43,7 @@ final class HttpTransport implements Transport, AsyncTransport
 
         if ($payload instanceof HttpPayload) {
             /** @var RawResult $raw */
-            $raw = $this->sendRequest($payload, $this->makeClient())->wait();
+            $raw = $this->sendRequest($payload, $this->factory->build(null))->wait();
         }
 
         return $raw;
@@ -69,7 +52,7 @@ final class HttpTransport implements Transport, AsyncTransport
     public function sendAsync(object $payload, ?string $payloadGroupHash): ?PromiseInterface
     {
         if ($payload instanceof HttpPayload) {
-            return $this->sendRequest($payload, $this->makeClient($payloadGroupHash));
+            return $this->sendRequest($payload, $this->factory->build($payloadGroupHash));
         }
 
         return null;
@@ -125,14 +108,5 @@ final class HttpTransport implements Transport, AsyncTransport
                     return $raw;
                 }
             );
-    }
-
-    private function makeClient(?string $groupId = null): Client
-    {
-        if (null === $groupId) {
-            return ($this->factory)();
-        }
-
-        return $this->clients[$groupId] ??= $this->makeClient();
     }
 }

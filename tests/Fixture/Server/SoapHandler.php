@@ -51,7 +51,7 @@ final class SoapHandler implements RequestHandlerInterface
             return new Response(400);
         }
 
-        $server = new SoapServer(FakeSoapServerClass::WSDL);
+        $server = new SoapServer(FakeSoapServerClass::WSDL_FILE);
         $server->setClass(FakeSoapServerClass::class);
         $server->setReturnResponse(true);
 
@@ -62,7 +62,7 @@ final class SoapHandler implements RequestHandlerInterface
 
     public function generateWsdl(): void
     {
-        $path = FakeSoapServerClass::WSDL;
+        $path = FakeSoapServerClass::WSDL_FILE;
 
         if (!file_exists(FakeSoapServerClass::TMP_DIR)) {
             mkdir(FakeSoapServerClass::TMP_DIR, 0777, true);

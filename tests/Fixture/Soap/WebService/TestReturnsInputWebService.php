@@ -18,7 +18,7 @@ final class TestReturnsInputWebService extends WebService
 
     protected function payload(): object
     {
-        return SoapPayload::forWsdl(FakeSoapServerClass::WSDL, 'returnValue')
+        return SoapPayload::forWsdl(FakeSoapServerClass::WSDL_URI, 'returnValue')
             ->withArguments([$this->input]);
     }
 

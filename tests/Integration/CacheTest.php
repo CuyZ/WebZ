@@ -7,13 +7,12 @@ use CuyZ\WebZ\Core\Transport\Transport;
 use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Soap\SoapTransport;
-use CuyZ\WebZ\Tests\Fixture\Soap\Client\IntegrationTestSoapClient;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyCacheWebService;
 use GuzzleHttp\Client;
 
 dataset('cache', [
     [
-        'transport' => new SoapTransport(IntegrationTestSoapClient::factory()),
+        'transport' => new SoapTransport(),
         'webservice' => DummyCacheWebService::soap('foo', 10),
     ],
     [

@@ -4,27 +4,31 @@ declare(strict_types=1);
 
 namespace CuyZ\WebZ\Soap;
 
-use CuyZ\WebZ\Soap\Exception\MissingSoapMethodException;
+use CuyZ\WebZ\Soap\Exception\MissingSoapActionException;
+use SoapHeader;
 
 final class SoapPayload
 {
     public const DEFAULT_OPTIONS = [
-        'trace' => true,
         'exceptions' => true,
         'features' => SOAP_SINGLE_ELEMENT_ARRAYS | SOAP_USE_XSI_ARRAY_TYPE,
     ];
 
-    private ?string $method;
+    private ?string $action;
     private array $arguments = [];
     private array $options;
+
+    /** @var SoapHeader[] */
+    private array $headers = [];
 
     private ?string $wsdl;
     private ?string $location;
     private ?string $uri;
+    private string $httpMethod = 'POST';
 
-    private function __construct(?string $soapMethod, ?string $wsdl, ?string $location, ?string $uri)
+    private function __construct(?string $soapAction, ?string $wsdl, ?string $location, ?string $uri)
     {
-        $this->method = $soapMethod;
+        $this->action = $soapAction;
         $this->wsdl = $wsdl;
         $this->location = $location;
         $this->uri = $uri;
@@ -32,14 +36,14 @@ final class SoapPayload
         $this->options = self::DEFAULT_OPTIONS;
     }
 
-    public static function forNonWsdl(string $location, string $uri, ?string $soapMethod = null): self
+    public static function forNonWsdl(string $location, string $uri, ?string $soapAction = null): self
     {
-        return new self($soapMethod, null, $location, $uri);
+        return new self($soapAction, null, $location, $uri);
     }
 
-    public static function forWsdl(string $wsdl, ?string $soapMethod = null): self
+    public static function forWsdl(string $wsdl, ?string $soapAction = null): self
     {
-        return new self($soapMethod, $wsdl, null, null);
+        return new self($soapAction, $wsdl, null, null);
     }
 
     public function withLocation(string $location): self
@@ -48,9 +52,9 @@ final class SoapPayload
         return $this;
     }
 
-    public function withMethod(string $method): self
+    public function withAction(string $action): self
     {
-        $this->method = $method;
+        $this->action = $action;
         return $this;
     }
 
@@ -66,23 +70,48 @@ final class SoapPayload
         return $this;
     }
 
+    public function withHeader(SoapHeader $header): self
+    {
+        $this->headers[] = $header;
+        return $this;
+    }
+
+    public function withHttpMethod(string $httpMethod): self
+    {
+        $this->httpMethod = $httpMethod;
+        return $this;
+    }
+
     public function wsdl(): ?string
     {
         return $this->wsdl;
     }
 
-    public function method(): string
+    public function action(): string
     {
-        if (null === $this->method) {
-            throw new MissingSoapMethodException();
+        if (null === $this->action) {
+            throw new MissingSoapActionException();
         }
 
-        return $this->method;
+        return $this->action;
     }
 
     public function arguments(): array
     {
         return $this->arguments;
+    }
+
+    /**
+     * @return SoapHeader[]
+     */
+    public function headers(): array
+    {
+        return $this->headers;
+    }
+
+    public function httpMethod(): string
+    {
+        return $this->httpMethod;
     }
 
     public function options(): array

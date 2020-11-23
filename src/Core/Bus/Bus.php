@@ -60,6 +60,6 @@ final class Bus
     {
         return $this->pipeline
             ->dispatch($webService)
-            ->then(/** @return mixed */ fn(Result $result) => $webService->parse($result->data()));
+            ->then(fn(Result $result) => $webService->parse($result->data()));
     }
 }
