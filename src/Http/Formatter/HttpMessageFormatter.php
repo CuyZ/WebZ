@@ -33,7 +33,7 @@ final class HttpMessageFormatter
             $message .= $name . ': ' . implode(', ', $values) . "\n";
         }
 
-        return $this->addBody($request, $message);
+        return trim($this->addBody($request, $message));
     }
 
     public function formatResponse(ResponseInterface $response): string
@@ -53,7 +53,7 @@ final class HttpMessageFormatter
             $message .= $name . ': ' . implode(', ', $values) . "\n";
         }
 
-        return $this->addBody($response, $message);
+        return trim($this->addBody($response, $message));
     }
 
     private function addBody(MessageInterface $request, string $message): string
@@ -65,7 +65,7 @@ final class HttpMessageFormatter
             return $message;
         }
 
-        $data = $stream->__toString();
+        $data = (string)$stream;
         $stream->rewind();
 
         // all non-printable ASCII characters and <DEL> except for \t, \r, \n
