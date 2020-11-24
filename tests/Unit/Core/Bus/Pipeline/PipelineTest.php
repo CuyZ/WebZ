@@ -11,6 +11,7 @@ use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Tests\Fixture\Middleware\IndexMiddleware;
 use CuyZ\WebZ\Tests\Fixture\Mocks;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
+use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -27,6 +28,37 @@ class PipelineTest extends TestCase
         $pipeline = new Pipeline();
 
         $pipeline->dispatch(new DummyWebService(new stdClass()));
+    }
+
+    public function test_wraps_middleware_exception_in_rejected_promise()
+    {
+        $exception = new Exception();
+
+        $middleware = new class($exception) implements Middleware {
+            private Exception $exception;
+
+            public function __construct(Exception $exception)
+            {
+                $this->exception = $exception;
+            }
+
+            public function process(WebService $webService, Next $next): PromiseInterface
+            {
+                throw $this->exception;
+            }
+        };
+
+        $pipeline = new Pipeline([$middleware]);
+
+        $actualException = null;
+
+        $pipeline->dispatch(new DummyWebService())
+            ->otherwise(function ($e) use (&$actualException) {
+                $actualException = $e;
+            })
+            ->wait();
+
+        self::assertSame($exception, $actualException);
     }
 
     public function test_dispatch_a_webService()

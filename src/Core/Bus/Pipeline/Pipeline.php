@@ -5,6 +5,7 @@ namespace CuyZ\WebZ\Core\Bus\Pipeline;
 
 use CuyZ\WebZ\Core\Bus\Middleware;
 use CuyZ\WebZ\Core\WebService;
+use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Promise\RejectedPromise;
 
@@ -51,7 +52,7 @@ final class Pipeline
 
             try {
                 return $middleware->process($webService, $this->resolve($index + 1));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return new RejectedPromise($e);
             }
         });
