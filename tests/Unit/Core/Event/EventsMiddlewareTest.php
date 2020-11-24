@@ -14,6 +14,9 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Event\EventsMiddleware
+ */
 class EventsMiddlewareTest extends TestCase
 {
     public function eventsDataProvider(): array

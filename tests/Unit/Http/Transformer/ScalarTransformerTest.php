@@ -6,6 +6,9 @@ use CuyZ\WebZ\Http\Transformer\ScalarTransformer;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \CuyZ\WebZ\Http\Transformer\ScalarTransformer
+ */
 class ScalarTransformerTest extends TestCase
 {
     public function valuesDataProvider(): array

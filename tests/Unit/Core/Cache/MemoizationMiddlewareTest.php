@@ -12,6 +12,9 @@ use GuzzleHttp\Promise\FulfilledPromise;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Cache\MemoizationMiddleware
+ */
 class MemoizationMiddlewareTest extends TestCase
 {
     public function test_ignores_incompatible_webservices()

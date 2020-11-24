@@ -15,6 +15,9 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Http\HttpTransport
+ */
 class HttpTransportTest extends TestCase
 {
     public function factoriesDataProvider(): array

@@ -6,6 +6,9 @@ use CuyZ\WebZ\Soap\Exception\MissingSoapActionException;
 use CuyZ\WebZ\Soap\SoapPayload;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \CuyZ\WebZ\Soap\SoapPayload
+ */
 class SoapPayloadTest extends TestCase
 {
     public function test_creation_in_wsdl_mode()

@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \CuyZ\WebZ\Http\Payload\HttpPayload
- * @uses   \CuyZ\WebZ\Http\Exception\MissingConfigException
  */
 class HttpPayloadTest extends TestCase
 {

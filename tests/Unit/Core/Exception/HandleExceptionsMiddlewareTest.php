@@ -13,6 +13,9 @@ use GuzzleHttp\Promise\FulfilledPromise;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Exception\HandleExceptionsMiddleware
+ */
 class HandleExceptionsMiddlewareTest extends TestCase
 {
     public function nextDataProvider()

@@ -8,6 +8,9 @@ use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Event\SuccessfulCallEvent
+ */
 class SuccessfulCallEventTest extends TestCase
 {
     public function test_creation()

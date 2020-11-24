@@ -7,6 +7,9 @@ use GuzzleHttp\Psr7\Response;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \CuyZ\WebZ\Http\Transformer\JsonTransformer
+ */
 class JsonTransformerTest extends TestCase
 {
     public function test_transforms_a_json_response_to_an_array()

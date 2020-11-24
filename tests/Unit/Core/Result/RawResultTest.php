@@ -6,6 +6,9 @@ use CuyZ\WebZ\Core\Result\RawResult;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Result\RawResult
+ */
 class RawResultTest extends TestCase
 {
     public function test_creates_a_successful_result()

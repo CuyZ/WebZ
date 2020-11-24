@@ -12,6 +12,9 @@ use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Bus\Pipeline\PipelineMiddleware
+ */
 class PipelineMiddlewareTest extends TestCase
 {
     public function test_dispatch_a_pipeline()

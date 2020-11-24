@@ -11,6 +11,9 @@ use GuzzleHttp\Promise\FulfilledPromise;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Bus\Pipeline\Next
+ */
 class NextTest extends TestCase
 {
     public function test_executes_the_internal_closure()

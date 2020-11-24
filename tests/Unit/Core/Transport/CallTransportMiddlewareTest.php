@@ -15,6 +15,9 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Transport\CallTransportMiddleware
+ */
 class CallTransportMiddlewareTest extends TestCase
 {
     public function test_throws_when_no_transport_is_present()

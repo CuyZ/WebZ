@@ -11,6 +11,9 @@ use PHPUnit\Framework\TestCase;
 use SoapFault;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Soap\SoapTransport
+ */
 class SoapTransportTest extends TestCase
 {
     public function test_returns_null_for_an_incompatible_payload()

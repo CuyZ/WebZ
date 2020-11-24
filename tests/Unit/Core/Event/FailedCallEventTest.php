@@ -8,6 +8,9 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Event\FailedCallEvent
+ */
 class FailedCallEventTest extends TestCase
 {
     public function test_creation()

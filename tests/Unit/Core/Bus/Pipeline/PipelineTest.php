@@ -15,6 +15,9 @@ use GuzzleHttp\Promise\PromiseInterface;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Bus\Pipeline\Pipeline
+ */
 class PipelineTest extends TestCase
 {
     public function test_throws_for_an_empty_pipeline()

@@ -7,6 +7,9 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Support\Arr
+ */
 class ArrTest extends TestCase
 {
     public function test_throws_on_invalid_input()

@@ -14,6 +14,9 @@ use GuzzleHttp\Promise\PromiseInterface;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Bus\Bus
+ */
 class BusTest extends TestCase
 {
     public function outputDataProvider(): array

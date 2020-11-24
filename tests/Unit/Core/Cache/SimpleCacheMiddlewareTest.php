@@ -14,6 +14,9 @@ use GuzzleHttp\Promise\FulfilledPromise;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \CuyZ\WebZ\Core\Cache\SimpleCacheMiddleware
+ */
 class SimpleCacheMiddlewareTest extends TestCase
 {
     public function test_ignores_incompatible_webservices()

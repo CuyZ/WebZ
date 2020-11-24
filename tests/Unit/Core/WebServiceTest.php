@@ -4,11 +4,13 @@ namespace CuyZ\WebZ\Tests\Unit\Core;
 
 use CuyZ\WebZ\Core\Exception\NotAsyncCallException;
 use CuyZ\WebZ\Core\Exception\PayloadGroupHashAlreadySetException;
-use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyCustomPayloadHashWebService;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyRandomPayloadWebService;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \CuyZ\WebZ\Core\WebService
+ */
 class WebServiceTest extends TestCase
 {
     public function test_payload_is_memoized()
