@@ -221,4 +221,37 @@ class HttpPayloadTest extends TestCase
             $payload->options()
         );
     }
+
+    public function test_setting_auth_basic_removes_authorization_header()
+    {
+        $payload = new HttpPayload();
+
+        $payload->withAuthBearer('foo');
+        $payload->withAuthBasic('fiz', 'baz');
+
+        self::assertSame(
+            [
+                'headers' => [],
+                'auth' => ['fiz', 'baz'],
+            ],
+            $payload->options()
+        );
+    }
+
+    public function test_setting_auth_bearer_removes_auth_option()
+    {
+        $payload = new HttpPayload();
+
+        $payload->withAuthBasic('fiz', 'baz');
+        $payload->withAuthBearer('foo');
+
+        self::assertSame(
+            [
+                'headers' => [
+                    'Authorization' => ['Bearer foo'],
+                ],
+            ],
+            $payload->options()
+        );
+    }
 }

@@ -84,12 +84,8 @@ final class HttpPayload
             $this->options['headers'] = [];
         }
 
-        /** @var mixed $headers */
+        /** @var array $headers */
         $headers = $this->options['headers'][$name] ?? [];
-
-        if (!is_array($headers)) {
-            $headers = [];
-        }
 
         $headers[] = $value;
 
