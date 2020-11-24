@@ -10,6 +10,8 @@ use CuyZ\WebZ\Core\Event\SuccessfulCallEvent;
 use CuyZ\WebZ\Tests\Fixture\Mocks;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
 use Exception;
+use GuzzleHttp\Promise\FulfilledPromise;
+use GuzzleHttp\Promise\RejectedPromise;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -24,40 +26,37 @@ class EventsMiddlewareTest extends TestCase
         return [
             [
                 'next' => new Next(fn() => Mocks::promiseOk()),
-                'event' => BeforeCallEvent::class,
-                'fires' => 1,
-            ],
-            [
-                'next' => new Next(fn() => Mocks::promiseOk()),
-                'event' => FailedCallEvent::class,
-                'fires' => 0,
-            ],
-            [
-                'next' => new Next(fn() => Mocks::promiseOk()),
-                'event' => SuccessfulCallEvent::class,
-                'fires' => 1,
-            ],
-
-            [
-                'next' => new Next(function () {
-                    throw new Exception();
-                }),
-                'event' => BeforeCallEvent::class,
-                'fires' => 1,
+                'events' => [
+                    BeforeCallEvent::class => 1,
+                    SuccessfulCallEvent::class => 1,
+                    FailedCallEvent::class => 0,
+                ],
             ],
             [
                 'next' => new Next(function () {
                     throw new Exception();
                 }),
-                'event' => FailedCallEvent::class,
-                'fires' => 1,
+                'events' => [
+                    BeforeCallEvent::class => 1,
+                    SuccessfulCallEvent::class => 0,
+                    FailedCallEvent::class => 1,
+                ],
             ],
             [
-                'next' => new Next(function () {
-                    throw new Exception();
-                }),
-                'event' => SuccessfulCallEvent::class,
-                'fires' => 0,
+                'next' => new Next(fn() => new RejectedPromise(new Exception())),
+                'events' => [
+                    BeforeCallEvent::class => 1,
+                    SuccessfulCallEvent::class => 0,
+                    FailedCallEvent::class => 1,
+                ],
+            ],
+            [
+                'next' => new Next(fn() => new FulfilledPromise(Mocks::resultErr(new Exception()))),
+                'events' => [
+                    BeforeCallEvent::class => 1,
+                    SuccessfulCallEvent::class => 0,
+                    FailedCallEvent::class => 1,
+                ],
             ],
         ];
     }
@@ -65,19 +64,22 @@ class EventsMiddlewareTest extends TestCase
     /**
      * @dataProvider eventsDataProvider
      * @param Next $next
-     * @param string $eventClass
-     * @param int $expectedFires
+     * @param array $events
      */
-    public function test_dispatches_events(Next $next, string $eventClass, int $expectedFires)
+    public function test_dispatches_events(Next $next, array $events)
     {
         $webservice = new DummyWebService(new stdClass());
         $dispatcher = new EventDispatcher();
 
-        $fires = 0;
+        $fires = [];
 
-        $dispatcher->addListener($eventClass, function () use (&$fires) {
-            $fires++;
-        });
+        foreach ($events as $eventClass => $expectedFires) {
+            $fires[$eventClass] = 0;
+
+            $dispatcher->addListener($eventClass, function () use ($eventClass, &$fires) {
+                $fires[$eventClass]++;
+            });
+        }
 
         $middleware = new EventsMiddleware($dispatcher);
 
@@ -87,6 +89,6 @@ class EventsMiddlewareTest extends TestCase
             //
         }
 
-        self::assertSame($expectedFires, $fires);
+        self::assertEquals($events, $fires);
     }
 }

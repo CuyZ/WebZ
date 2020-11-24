@@ -25,33 +25,19 @@ final class EventDispatchingTest extends TestCase
         return [
             [
                 'transport' => new DummyTransport(),
-                'eventClass' => BeforeCallEvent::class,
-                'expectedFires' => 1,
-            ],
-            [
-                'transport' => new DummyTransport(),
-                'eventClass' => SuccessfulCallEvent::class,
-                'expectedFires' => 1,
-            ],
-            [
-                'transport' => new DummyTransport(),
-                'eventClass' => FailedCallEvent::class,
-                'expectedFires' => 0,
+                'events' => [
+                    BeforeCallEvent::class => 1,
+                    SuccessfulCallEvent::class => 1,
+                    FailedCallEvent::class => 0,
+                ],
             ],
             [
                 'transport' => new DummyExceptionTransport(),
-                'eventClass' => BeforeCallEvent::class,
-                'expectedFires' => 1,
-            ],
-            [
-                'transport' => new DummyExceptionTransport(),
-                'eventClass' => SuccessfulCallEvent::class,
-                'expectedFires' => 0,
-            ],
-            [
-                'transport' => new DummyExceptionTransport(),
-                'eventClass' => FailedCallEvent::class,
-                'expectedFires' => 1,
+                'events' => [
+                    BeforeCallEvent::class => 1,
+                    SuccessfulCallEvent::class => 0,
+                    FailedCallEvent::class => 1,
+                ],
             ],
         ];
     }
@@ -59,19 +45,22 @@ final class EventDispatchingTest extends TestCase
     /**
      * @dataProvider synchronousEventsDataProvider
      * @param Transport $transport
-     * @param string $eventClass
-     * @param int $expectedFires
+     * @param array $events
      */
-    public function test_dispatches_events_synchronously(Transport $transport, string $eventClass, int $expectedFires)
+    public function test_dispatches_events_synchronously(Transport $transport, array $events)
     {
         $webservice = new DummyWebService(new stdClass());
         $dispatcher = new EventDispatcher();
 
-        $fires = 0;
+        $fires = [];
 
-        $dispatcher->addListener($eventClass, function () use (&$fires) {
-            $fires++;
-        });
+        foreach ($events as $eventClass => $expectedFires) {
+            $fires[$eventClass] = 0;
+
+            $dispatcher->addListener($eventClass, function () use ($eventClass, &$fires) {
+                $fires[$eventClass]++;
+            });
+        }
 
         $bus = Bus::builder()
             ->withTransport($transport)
@@ -84,7 +73,7 @@ final class EventDispatchingTest extends TestCase
             //
         }
 
-        self::assertSame($expectedFires, $fires);
+        self::assertEquals($events, $fires);
     }
 
     public function asynchronousEventsDataProvider(): array
