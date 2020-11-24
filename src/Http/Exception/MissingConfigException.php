@@ -6,6 +6,9 @@ namespace CuyZ\WebZ\Http\Exception;
 use CuyZ\WebZ\Core\Exception\WebZException;
 use LogicException;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class MissingConfigException extends LogicException implements WebZException
 {
     public function __construct(string $option)

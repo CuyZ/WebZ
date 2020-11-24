@@ -6,6 +6,9 @@ namespace CuyZ\WebZ\Soap\Exception;
 use CuyZ\WebZ\Core\Exception\WebZException;
 use LogicException;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class MissingSoapActionException extends LogicException implements WebZException
 {
     public function __construct()

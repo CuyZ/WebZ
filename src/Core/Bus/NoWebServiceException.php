@@ -6,6 +6,9 @@ namespace CuyZ\WebZ\Core\Bus;
 use CuyZ\WebZ\Core\Exception\WebZException;
 use LogicException;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class NoWebServiceException extends LogicException implements WebZException
 {
     public function __construct()

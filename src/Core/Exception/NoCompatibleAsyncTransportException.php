@@ -5,6 +5,9 @@ namespace CuyZ\WebZ\Core\Exception;
 
 use LogicException;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class NoCompatibleAsyncTransportException extends LogicException implements WebZException
 {
     public function __construct(object $payload)

@@ -7,6 +7,9 @@ use CuyZ\WebZ\Core\Exception\WebZException;
 use CuyZ\WebZ\Core\Result\Result;
 use UnexpectedValueException;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class CorruptCacheEntryException extends UnexpectedValueException implements WebZException
 {
     public function __construct(string $hash)

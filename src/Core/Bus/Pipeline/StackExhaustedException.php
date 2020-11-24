@@ -6,6 +6,9 @@ namespace CuyZ\WebZ\Core\Bus\Pipeline;
 use CuyZ\WebZ\Core\Exception\WebZException;
 use RuntimeException;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class StackExhaustedException extends RuntimeException implements WebZException
 {
     public function __construct()

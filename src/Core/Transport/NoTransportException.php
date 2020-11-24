@@ -6,6 +6,9 @@ namespace CuyZ\WebZ\Core\Transport;
 use CuyZ\WebZ\Core\Exception\WebZException;
 use LogicException;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class NoTransportException extends LogicException implements WebZException
 {
     public function __construct()
