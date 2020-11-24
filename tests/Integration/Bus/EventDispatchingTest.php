@@ -18,6 +18,9 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+/**
+ * @coversNothing
+ */
 final class EventDispatchingTest extends TestCase
 {
     public function synchronousEventsDataProvider(): array

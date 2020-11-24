@@ -6,7 +6,6 @@ help:
 	@echo "  test-unit                      to perform unit tests."
 	@echo "  test-integration               to perform integration tests."
 	@echo "  coverage                       to perform tests with code coverage."
-	@echo "  coverage-unit                  to perform unit tests with code coverage."
 	@echo "  static                         to run phpstan and psalm on the codebase"
 
 install:
@@ -33,15 +32,8 @@ test-integration: start-server
 	php vendor/bin/phpunit --testsuite=integration
 	$(MAKE) stop-server
 
-coverage: start-server
-	php vendor/bin/phpunit --coverage-text --testsuite=unit,integration
-	$(MAKE) stop-server
-
-coverage-unit:
-	php vendor/bin/phpunit --testsuite=unit --coverage-text
-
-coverage-integration:
-	php vendor/bin/phpunit --testsuite=integration --coverage-text
+coverage:
+	php vendor/bin/phpunit --coverage-text --testsuite=unit
 
 phpstan:
 	php vendor/bin/phpstan analyse

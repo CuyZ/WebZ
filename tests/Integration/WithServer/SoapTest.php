@@ -16,6 +16,9 @@ use DateTimeZone;
 use SoapFault;
 use stdClass;
 
+/**
+ * @coversNothing
+ */
 class SoapTest extends ServerTestCase
 {
     public function test_throws_a_SoapFault()

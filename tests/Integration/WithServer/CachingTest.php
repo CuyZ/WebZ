@@ -12,6 +12,9 @@ use CuyZ\WebZ\Soap\SoapTransport;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyCacheWebService;
 use CuyZ\WebZ\Tests\Integration\ServerTestCase;
 
+/**
+ * @coversNothing
+ */
 final class CachingTest extends ServerTestCase
 {
     public function transportsDataProvider(): array

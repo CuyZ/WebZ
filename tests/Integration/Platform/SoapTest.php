@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
  * the `extension_loaded` is only overridden here.
  *
  * @runTestsInSeparateProcesses
+ * @coversNothing
  */
 final class SoapTest extends TestCase
 {

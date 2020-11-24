@@ -11,6 +11,9 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @coversNothing
+ */
 final class ExceptionHandlingTest extends TestCase
 {
     public function test_throws_exception_as_is()

@@ -15,6 +15,9 @@ use CuyZ\WebZ\Tests\Integration\ServerTestCase;
 use DateTime;
 use DateTimeZone;
 
+/**
+ * @coversNothing
+ */
 final class HttpTest extends ServerTestCase
 {
     private function sets(): array
