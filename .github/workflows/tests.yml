@@ -37,9 +37,6 @@ jobs:
       - name: Execute tests
         run: make test
 
-      - name: Execute platform tests
-        run: make test-platform
-
       - name: Execute PHPStan
         run: make phpstan
 

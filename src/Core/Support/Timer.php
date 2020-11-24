@@ -19,14 +19,6 @@ final class Timer
         return new Timer();
     }
 
-    public static function zero(): Timer
-    {
-        $timer = self::start();
-        $timer->stopTime = $timer->startTime;
-
-        return $timer;
-    }
-
     public function stop(): void
     {
         $this->stopTime = $this->microtime();

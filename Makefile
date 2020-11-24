@@ -23,29 +23,25 @@ stop-server:
 	) && [ -n "$$PID" ] && kill $$PID || true
 
 test: start-server
-	php vendor/bin/pest --group=unit,integration
+	php vendor/bin/phpunit --testsuite=unit,integration
 	$(MAKE) stop-server
 
 test-unit:
-	php vendor/bin/pest --group=unit
+	php vendor/bin/phpunit --testsuite=unit
 
 test-integration: start-server
-	php vendor/bin/pest --group=integration
+	php vendor/bin/phpunit --testsuite=integration
 	$(MAKE) stop-server
 
-# These tests are a bit of a hack so they need to be executed on their own
-test-platform:
-	php vendor/bin/pest tests/Platform/SoapTest.php
-
 coverage: start-server
-	php vendor/bin/pest --coverage --group=unit,integration
+	php vendor/bin/phpunit --coverage-text --testsuite=unit,integration
 	$(MAKE) stop-server
 
 coverage-unit:
-	php vendor/bin/pest --group=unit --coverage
+	php vendor/bin/phpunit --testsuite=unit --coverage-text
 
 coverage-integration:
-	php vendor/bin/pest --group=integration --coverage
+	php vendor/bin/phpunit --testsuite=integration --coverage-text
 
 phpstan:
 	php vendor/bin/phpstan analyse
