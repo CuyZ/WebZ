@@ -5,6 +5,7 @@ namespace CuyZ\WebZ\Tests\Unit\Core;
 use CuyZ\WebZ\Core\Exception\NotAsyncCallException;
 use CuyZ\WebZ\Core\Exception\PayloadGroupHashAlreadySetException;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyCustomPayloadHashWebService;
+use CuyZ\WebZ\Tests\Fixture\WebService\DummyRandomCustomPayloadHashWebService;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyRandomPayloadWebService;
 use PHPUnit\Framework\TestCase;
 
@@ -28,6 +29,26 @@ class WebServiceTest extends TestCase
         $webService = new DummyCustomPayloadHashWebService('foo');
 
         self::assertSame('foo', $webService->getPayloadHash());
+    }
+
+    public function test_default_payload_hash_is_memoized()
+    {
+        $webService = new DummyRandomPayloadWebService();
+
+        $hash1 = $webService->getPayloadHash();
+        $hash2 = $webService->getPayloadHash();
+
+        self::assertSame($hash1, $hash2);
+    }
+
+    public function test_custom_payload_hash_is_memoized()
+    {
+        $webService = new DummyRandomCustomPayloadHashWebService();
+
+        $hash1 = $webService->getPayloadHash();
+        $hash2 = $webService->getPayloadHash();
+
+        self::assertSame($hash1, $hash2);
     }
 
     public function test_sets_payload_group_hash()
