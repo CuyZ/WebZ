@@ -20,7 +20,7 @@ final class FakeSoapSender implements SoapSender
         $this->responses = $responses;
     }
 
-    public function send(SoapPayload $payload, ?string $payloadGroupHash = null): PromiseInterface
+    public function send(SoapPayload $payload, ?string $asyncCallHash = null): PromiseInterface
     {
         $response = $this->responses[$payload->action()] ?? null;
         $raw = $response;

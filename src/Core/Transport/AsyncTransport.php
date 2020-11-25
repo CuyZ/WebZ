@@ -6,5 +6,5 @@ use GuzzleHttp\Promise\PromiseInterface;
 
 interface AsyncTransport extends Transport
 {
-    public function sendAsync(object $payload, ?string $payloadGroupHash): ?PromiseInterface;
+    public function sendAsync(object $payload, ?string $asyncCallHash): ?PromiseInterface;
 }

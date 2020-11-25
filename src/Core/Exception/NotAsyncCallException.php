@@ -13,7 +13,7 @@ final class NotAsyncCallException extends LogicException implements WebZExceptio
     public function __construct()
     {
         parent::__construct(
-            'Cannot get the payload group hash for a synchronous call',
+            'Cannot get the async call hash for a synchronous call',
             1605898766
         );
     }

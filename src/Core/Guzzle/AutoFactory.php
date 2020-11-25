@@ -19,9 +19,9 @@ final class AutoFactory implements GuzzleClientFactory
         $this->internal = $this->wrap($factory);
     }
 
-    public function build(?string $payloadGroupHash): Client
+    public function build(?string $asyncCallHash): Client
     {
-        return $this->internal->build($payloadGroupHash);
+        return $this->internal->build($asyncCallHash);
     }
 
     /**

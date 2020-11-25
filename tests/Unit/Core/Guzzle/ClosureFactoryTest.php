@@ -16,8 +16,8 @@ class ClosureFactoryTest extends TestCase
         $receivedHash = null;
         $client = new Client();
 
-        $factory = new ClosureFactory(function (?string $payloadGroupHash) use ($client, &$receivedHash) {
-            $receivedHash = $payloadGroupHash;
+        $factory = new ClosureFactory(function (?string $asyncCallHash) use ($client, &$receivedHash) {
+            $receivedHash = $asyncCallHash;
 
             return $client;
         });

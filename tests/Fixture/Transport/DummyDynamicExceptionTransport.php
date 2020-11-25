@@ -11,7 +11,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 
 final class DummyDynamicExceptionTransport implements Transport, AsyncTransport
 {
-    public function sendAsync(object $payload, ?string $payloadGroupHash): ?PromiseInterface
+    public function sendAsync(object $payload, ?string $asyncCallHash): ?PromiseInterface
     {
         if ($payload instanceof \Exception) {
             throw $payload;

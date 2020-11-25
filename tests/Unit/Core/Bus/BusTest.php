@@ -11,6 +11,7 @@ use CuyZ\WebZ\Core\Bus\Pipeline\Pipeline;
 use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Tests\Fixture\Mocks;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyOutputWebService;
+use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
 use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
 use PHPUnit\Framework\TestCase;
@@ -101,5 +102,30 @@ class BusTest extends TestCase
     public function test_creates_a_builder()
     {
         self::assertInstanceOf(BusBuilder::class, Bus::builder());
+    }
+
+    public function test_webservices_have_same_async_call_hash_when_async_call()
+    {
+        $middleware = new class implements Middleware {
+            public array $hashes = [];
+
+            public function process(WebService $webService, Next $next): PromiseInterface
+            {
+                $this->hashes[] = $webService->getAsyncCallHash();
+
+                return Mocks::promiseOk();
+            }
+        };
+
+        $pipeline = new Pipeline([$middleware]);
+
+        $bus = new Bus($pipeline);
+
+        $bus->callAsync(
+            new DummyWebService(),
+            new DummyWebService(),
+        );
+
+        self::assertCount(1, array_unique($middleware->hashes));
     }
 }

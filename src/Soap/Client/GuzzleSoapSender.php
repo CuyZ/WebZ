@@ -31,10 +31,10 @@ final class GuzzleSoapSender implements SoapSender
         $this->formatter = new HttpMessageFormatter();
     }
 
-    public function send(SoapPayload $payload, ?string $payloadGroupHash = null): PromiseInterface
+    public function send(SoapPayload $payload, ?string $asyncCallHash = null): PromiseInterface
     {
         $converter = new SoapToPsrConverter($payload);
-        $client = $this->factory->build($payloadGroupHash);
+        $client = $this->factory->build($asyncCallHash);
 
         $request = $converter->toRequest();
         $promise = $client->sendAsync($request);

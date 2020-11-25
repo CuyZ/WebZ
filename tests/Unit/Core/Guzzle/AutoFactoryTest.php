@@ -30,8 +30,8 @@ class AutoFactoryTest extends TestCase
         $receivedHash = null;
         $client = new Client();
 
-        $factory = new AutoFactory(function (?string $payloadGroupHash) use ($client, &$receivedHash) {
-            $receivedHash = $payloadGroupHash;
+        $factory = new AutoFactory(function (?string $asyncCallHash) use ($client, &$receivedHash) {
+            $receivedHash = $asyncCallHash;
 
             return $client;
         });
@@ -55,9 +55,9 @@ class AutoFactoryTest extends TestCase
                 $this->client = $client;
             }
 
-            public function build(?string $payloadGroupHash): Client
+            public function build(?string $asyncCallHash): Client
             {
-                $this->receivedHash = $payloadGroupHash;
+                $this->receivedHash = $asyncCallHash;
 
                 return $this->client;
             }

@@ -8,12 +8,12 @@ use LogicException;
 /**
  * @codeCoverageIgnore
  */
-final class PayloadGroupHashAlreadySetException extends LogicException implements WebZException
+final class AsyncCallHashAlreadySetException extends LogicException implements WebZException
 {
     public function __construct()
     {
         parent::__construct(
-            'The payload group hash cannot be overridden',
+            'The async call hash cannot be overridden',
             1605898597
         );
     }

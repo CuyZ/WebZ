@@ -29,7 +29,7 @@ class HttpTransportTest extends TestCase
 
             [
                 new class implements GuzzleClientFactory {
-                    public function build(?string $payloadGroupHash): Client
+                    public function build(?string $asyncCallHash): Client
                     {
                         return new Client();
                     }

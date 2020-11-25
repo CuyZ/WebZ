@@ -10,12 +10,12 @@ final class SharedClientsFactory implements GuzzleClientFactory
     /** @var Client[] */
     private array $clients = [];
 
-    public function build(?string $payloadGroupHash): Client
+    public function build(?string $asyncCallHash): Client
     {
-        if (null === $payloadGroupHash) {
+        if (null === $asyncCallHash) {
             return new Client();
         }
 
-        return $this->clients[$payloadGroupHash] ??= new Client();
+        return $this->clients[$asyncCallHash] ??= new Client();
     }
 }

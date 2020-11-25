@@ -49,10 +49,10 @@ final class HttpTransport implements Transport, AsyncTransport
         return $raw;
     }
 
-    public function sendAsync(object $payload, ?string $payloadGroupHash): ?PromiseInterface
+    public function sendAsync(object $payload, ?string $asyncCallHash): ?PromiseInterface
     {
         if ($payload instanceof HttpPayload) {
-            return $this->sendRequest($payload, $this->factory->build($payloadGroupHash));
+            return $this->sendRequest($payload, $this->factory->build($asyncCallHash));
         }
 
         return null;

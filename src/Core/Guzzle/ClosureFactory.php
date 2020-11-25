@@ -16,11 +16,11 @@ final class ClosureFactory implements GuzzleClientFactory
     }
 
     /**
-     * @param string|null $payloadGroupHash
+     * @param string|null $asyncCallHash
      * @return Client
      */
-    public function build(?string $payloadGroupHash): Client
+    public function build(?string $asyncCallHash): Client
     {
-        return ($this->closure)($payloadGroupHash);
+        return ($this->closure)($asyncCallHash);
     }
 }

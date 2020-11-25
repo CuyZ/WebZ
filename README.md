@@ -447,7 +447,7 @@ class MyTransport implements AsyncTransport
         return $this->sendAsync($payload, null)->wait();
     }
 
-    public function sendAsync(object $payload, ?string $payloadGroupHash): ?PromiseInterface
+    public function sendAsync(object $payload, ?string $asyncCallHash): ?PromiseInterface
     {
         // If the payload is not supported by this transport
         // it must return null

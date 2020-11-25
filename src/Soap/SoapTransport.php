@@ -45,10 +45,10 @@ final class SoapTransport implements Transport, AsyncTransport
         }
     }
 
-    public function sendAsync(object $payload, ?string $payloadGroupHash): ?PromiseInterface
+    public function sendAsync(object $payload, ?string $asyncCallHash): ?PromiseInterface
     {
         if ($payload instanceof SoapPayload) {
-            return $this->sendRequest($payload, $payloadGroupHash);
+            return $this->sendRequest($payload, $asyncCallHash);
         }
 
         return null;
@@ -66,8 +66,8 @@ final class SoapTransport implements Transport, AsyncTransport
         return $result;
     }
 
-    private function sendRequest(SoapPayload $payload, ?string $payloadGroupHash = null): PromiseInterface
+    private function sendRequest(SoapPayload $payload, ?string $asyncCallHash = null): PromiseInterface
     {
-        return $this->sender->send($payload);
+        return $this->sender->send($payload, $asyncCallHash);
     }
 }

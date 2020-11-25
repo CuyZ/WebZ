@@ -74,7 +74,7 @@ final class CallTransportMiddleware implements Middleware
             }
 
             /** @var string $hash */
-            $hash = $webService->getPayloadGroupHash();
+            $hash = $webService->getAsyncCallHash();
 
             return $transport->sendAsync($webService->getPayload(), $hash);
         }

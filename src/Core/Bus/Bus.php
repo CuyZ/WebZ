@@ -44,11 +44,11 @@ final class Bus
         $payloads = array_map(fn(WebService $webService): string => $webService->getPayloadHash(), $webServices);
         $payloads = implode('', $payloads);
 
-        $payloadGroupId = sha1(serialize($payloads));
+        $asyncCallHash = sha1(serialize($payloads));
 
         return array_map(
-            function (WebService $webService) use ($payloadGroupId): PromiseInterface {
-                $webService->markAsAsyncCall($payloadGroupId);
+            function (WebService $webService) use ($asyncCallHash): PromiseInterface {
+                $webService->markAsAsyncCall($asyncCallHash);
 
                 return $this->dispatch($webService);
             },

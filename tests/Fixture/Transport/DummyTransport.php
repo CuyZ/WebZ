@@ -24,7 +24,7 @@ final class DummyTransport implements Transport, AsyncTransport
         return $this->sendAsync($payload, Utils::random(self::class))->wait();
     }
 
-    public function sendAsync(object $payload, ?string $payloadGroupHash): ?PromiseInterface
+    public function sendAsync(object $payload, ?string $asyncCallHash): ?PromiseInterface
     {
         return new FulfilledPromise(RawResult::ok($this->raw));
     }

@@ -15,7 +15,7 @@ final class DummyIncompatibleTransport implements Transport, AsyncTransport
         return null;
     }
 
-    public function sendAsync(object $payload, ?string $payloadGroupHash): ?PromiseInterface
+    public function sendAsync(object $payload, ?string $asyncCallHash): ?PromiseInterface
     {
         return null;
     }

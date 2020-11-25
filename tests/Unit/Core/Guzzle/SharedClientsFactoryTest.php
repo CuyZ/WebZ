@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SharedClientsFactoryTest extends TestCase
 {
-    public function test_returns_a_new_client_instance_if_payload_group_hash_is_null()
+    public function test_returns_a_new_client_instance_if_async_call_hash_is_null()
     {
         $factory = new SharedClientsFactory();
 
@@ -20,7 +20,7 @@ class SharedClientsFactoryTest extends TestCase
         self::assertNotSame($client1, $client2);
     }
 
-    public function test_returns_a_singleton_for_a_specific_payload_group_hash()
+    public function test_returns_a_singleton_for_a_specific_async_call_hash()
     {
         $factory = new SharedClientsFactory();
 

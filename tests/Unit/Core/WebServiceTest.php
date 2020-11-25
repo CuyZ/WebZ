@@ -3,7 +3,7 @@
 namespace CuyZ\WebZ\Tests\Unit\Core;
 
 use CuyZ\WebZ\Core\Exception\NotAsyncCallException;
-use CuyZ\WebZ\Core\Exception\PayloadGroupHashAlreadySetException;
+use CuyZ\WebZ\Core\Exception\AsyncCallHashAlreadySetException;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyCustomPayloadHashWebService;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyRandomCustomPayloadHashWebService;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyRandomPayloadWebService;
@@ -51,22 +51,22 @@ class WebServiceTest extends TestCase
         self::assertSame($hash1, $hash2);
     }
 
-    public function test_sets_payload_group_hash()
+    public function test_sets_async_call_hash()
     {
         $webService = new DummyRandomPayloadWebService();
 
         $webService->markAsAsyncCall('foo');
 
-        self::assertSame('foo', $webService->getPayloadGroupHash());
+        self::assertSame('foo', $webService->getAsyncCallHash());
     }
 
-    public function test_throws_on_unset_payload_group_hash()
+    public function test_throws_on_unset_async_call_hash()
     {
         $this->expectException(NotAsyncCallException::class);
 
         $webService = new DummyRandomPayloadWebService();
 
-        $webService->getPayloadGroupHash();
+        $webService->getAsyncCallHash();
     }
 
     public function test_knows_if_it_is_an_async_call()
@@ -80,9 +80,9 @@ class WebServiceTest extends TestCase
         self::assertTrue($webService->isAsyncCall());
     }
 
-    public function test_throws_if_payload_group_hash_is_overridden()
+    public function test_throws_if_async_call_hash_is_overridden()
     {
-        $this->expectException(PayloadGroupHashAlreadySetException::class);
+        $this->expectException(AsyncCallHashAlreadySetException::class);
 
         $webService = new DummyRandomPayloadWebService();
 

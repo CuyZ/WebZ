@@ -7,5 +7,5 @@ use GuzzleHttp\Promise\PromiseInterface;
 
 interface SoapSender
 {
-    public function send(SoapPayload $payload, ?string $payloadGroupHash = null): PromiseInterface;
+    public function send(SoapPayload $payload, ?string $asyncCallHash = null): PromiseInterface;
 }

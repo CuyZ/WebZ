@@ -6,5 +6,5 @@ use GuzzleHttp\Client;
 
 interface GuzzleClientFactory
 {
-    public function build(?string $payloadGroupHash): Client;
+    public function build(?string $asyncCallHash): Client;
 }

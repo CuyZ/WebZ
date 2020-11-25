@@ -5,13 +5,13 @@ namespace CuyZ\WebZ\Core;
 
 use CuyZ\WebZ\Core\Cache\WithCustomPayloadHash;
 use CuyZ\WebZ\Core\Exception\NotAsyncCallException;
-use CuyZ\WebZ\Core\Exception\PayloadGroupHashAlreadySetException;
+use CuyZ\WebZ\Core\Exception\AsyncCallHashAlreadySetException;
 
 abstract class WebService
 {
     private ?object $payload = null;
     private ?string $hash = null;
-    private ?string $payloadGroupHash = null;
+    private ?string $asyncCallHash = null;
 
     abstract protected function payload(): object;
 
@@ -37,24 +37,24 @@ abstract class WebService
 
     final public function isAsyncCall(): bool
     {
-        return strlen((string)$this->payloadGroupHash) > 0;
+        return strlen((string)$this->asyncCallHash) > 0;
     }
 
-    final public function markAsAsyncCall(string $payloadGroupHash): void
+    final public function markAsAsyncCall(string $asyncCallHash): void
     {
-        if (strlen((string)$this->payloadGroupHash) > 0) {
-            throw new PayloadGroupHashAlreadySetException();
+        if (strlen((string)$this->asyncCallHash) > 0) {
+            throw new AsyncCallHashAlreadySetException();
         }
 
-        $this->payloadGroupHash = $payloadGroupHash;
+        $this->asyncCallHash = $asyncCallHash;
     }
 
-    final public function getPayloadGroupHash(): ?string
+    final public function getAsyncCallHash(): ?string
     {
         if (!$this->isAsyncCall()) {
             throw new NotAsyncCallException();
         }
 
-        return $this->payloadGroupHash;
+        return $this->asyncCallHash;
     }
 }
