@@ -48,7 +48,7 @@ final class Bus
 
         return array_map(
             function (WebService $webService) use ($payloadGroupId): PromiseInterface {
-                $webService->setPayloadGroupHash($payloadGroupId);
+                $webService->markAsAsyncCall($payloadGroupId);
 
                 return $this->dispatch($webService);
             },

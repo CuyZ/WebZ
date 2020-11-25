@@ -40,7 +40,7 @@ abstract class WebService
         return strlen((string)$this->payloadGroupHash) > 0;
     }
 
-    final public function setPayloadGroupHash(string $payloadGroupHash): void
+    final public function markAsAsyncCall(string $payloadGroupHash): void
     {
         if (strlen((string)$this->payloadGroupHash) > 0) {
             throw new PayloadGroupHashAlreadySetException();

@@ -48,7 +48,7 @@ class CallTransportMiddlewareTest extends TestCase
         $this->expectException(NoCompatibleAsyncTransportException::class);
 
         $webservice = new DummyWebService(new stdClass());
-        $webservice->setPayloadGroupHash('foo');
+        $webservice->markAsAsyncCall('foo');
 
         $middleware = new CallTransportMiddleware([
             new DummySynchronousIncompatibleTransport(),
@@ -81,7 +81,7 @@ class CallTransportMiddlewareTest extends TestCase
     public function test_calls_the_correct_asynchronous_transport()
     {
         $webservice = new DummyWebService(new stdClass());
-        $webservice->setPayloadGroupHash('foo');
+        $webservice->markAsAsyncCall('foo');
 
         $middleware = new CallTransportMiddleware([
             new DummyIncompatibleTransport(),

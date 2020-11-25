@@ -55,7 +55,7 @@ class WebServiceTest extends TestCase
     {
         $webService = new DummyRandomPayloadWebService();
 
-        $webService->setPayloadGroupHash('foo');
+        $webService->markAsAsyncCall('foo');
 
         self::assertSame('foo', $webService->getPayloadGroupHash());
     }
@@ -75,7 +75,7 @@ class WebServiceTest extends TestCase
 
         self::assertFalse($webService->isAsyncCall());
 
-        $webService->setPayloadGroupHash('foo');
+        $webService->markAsAsyncCall('foo');
 
         self::assertTrue($webService->isAsyncCall());
     }
@@ -86,7 +86,7 @@ class WebServiceTest extends TestCase
 
         $webService = new DummyRandomPayloadWebService();
 
-        $webService->setPayloadGroupHash('foo');
-        $webService->setPayloadGroupHash('foo');
+        $webService->markAsAsyncCall('foo');
+        $webService->markAsAsyncCall('foo');
     }
 }
