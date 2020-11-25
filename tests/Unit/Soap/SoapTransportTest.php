@@ -129,4 +129,9 @@ class SoapTransportTest extends TestCase
 
         $transport->send($payload);
     }
+
+    public function test_create_instance_with_factory()
+    {
+        self::assertInstanceOf(SoapTransport::class, SoapTransport::withFactory());
+    }
 }

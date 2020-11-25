@@ -45,7 +45,7 @@ final class Mocks
      */
     public static function httpClientFactory(...$responses): Closure
     {
-        return fn() => self::httpClient($responses);
+        return fn() => self::httpClient(...$responses);
     }
 
     public static function resultOk(array $data = []): Result
