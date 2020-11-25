@@ -31,8 +31,8 @@ final class SoapTransport implements Transport, AsyncTransport
     {
         /**
          * The `extension_loaded` function must no be imported
-         * or prefixed with a / so that the unit test works.
-         * @see tests/Platform/SoapTest.php
+         * or prefixed with a / so that the test works.
+         * @see \CuyZ\WebZ\Soap\SoapTest
          */
         if (!extension_loaded('soap')) {
             throw new SoapExtensionNotInstalledException(); // @codeCoverageIgnore
