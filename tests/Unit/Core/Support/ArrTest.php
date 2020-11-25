@@ -70,6 +70,19 @@ class ArrTest extends TestCase
                 ],
             ],
         ];
+
+        yield [
+            'input' => [
+                'foo' => [
+                    'bar' => ['a', 'b', 'c'],
+                ],
+            ],
+            'output' => [
+                'foo' => [
+                    'bar' => ['a', 'b', 'c'],
+                ],
+            ],
+        ];
     }
 
     /**

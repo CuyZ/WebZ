@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace CuyZ\WebZ\Core\Support;
 
-use InvalidArgumentException;
-
 final class Arr
 {
     /**
@@ -27,10 +25,7 @@ final class Arr
     private static function toArrayLoop($subject): array
     {
         if (!is_object($subject) && !is_array($subject)) {
-            throw new InvalidArgumentException(
-                '$subject must be an object or an array, `' . gettype($subject) . '` given',
-                1507292680
-            );
+            throw new InvalidSubjectException($subject);
         }
 
         if (is_object($subject)) {
