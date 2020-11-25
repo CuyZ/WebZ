@@ -14,15 +14,35 @@ class AutoFactoryTest extends TestCase
 {
     public function test_creates_shared_clients_factory_when_argument_is_null()
     {
-        $factory = new AutoFactory();
+        $factory1 = new AutoFactory();
 
-        $clientFoo1 = $factory->build('foo');
-        $clientBar1 = $factory->build('bar');
-        $clientFoo2 = $factory->build('foo');
-        $clientBar2 = $factory->build('bar');
+        $firstFoo = $factory1->build('foo');
+        $firstBar = $factory1->build('bar');
 
-        self::assertSame($clientFoo1, $clientFoo2);
-        self::assertSame($clientBar1, $clientBar2);
+        $foo = [];
+        $bar = [];
+
+        $foo[] = $factory1->build('foo');
+        $foo[] = $factory1->build('foo');
+
+        $bar[] = $factory1->build('bar');
+        $bar[] = $factory1->build('bar');
+
+        $factory2 = new AutoFactory();
+
+        $foo[] = $factory2->build('foo');
+        $foo[] = $factory2->build('foo');
+
+        $bar[] = $factory2->build('bar');
+        $bar[] = $factory2->build('bar');
+
+        foreach ($foo as $client) {
+            self::assertSame($firstFoo, $client);
+        }
+
+        foreach ($bar as $client) {
+            self::assertSame($firstBar, $client);
+        }
     }
 
     public function test_wraps_a_closure()
