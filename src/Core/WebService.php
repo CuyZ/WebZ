@@ -29,10 +29,10 @@ abstract class WebService
     final public function getPayloadHash(): string
     {
         if ($this instanceof WithCustomPayloadHash) {
-            return $this->hash ??= $this->getHash($this->getPayload());
+            return $this->hash ??= $this->getHash($this->payload());
         }
 
-        return $this->hash ??= sha1(serialize($this->getPayload()));
+        return $this->hash ??= sha1(serialize($this->payload()));
     }
 
     final public function isAsyncCall(): bool
