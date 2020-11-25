@@ -82,6 +82,23 @@ final class SoapPayload
         return $this;
     }
 
+    public function withSoapVersion11(): self
+    {
+        return $this->withSoapVersion(SOAP_1_1);
+    }
+
+    public function withSoapVersion12(): self
+    {
+        return $this->withSoapVersion(SOAP_1_2);
+    }
+
+    private function withSoapVersion(int $version): self
+    {
+        $this->options['soap_version'] = $version;
+
+        return $this;
+    }
+
     public function wsdl(): ?string
     {
         return $this->wsdl;

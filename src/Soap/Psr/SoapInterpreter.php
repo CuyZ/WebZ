@@ -20,6 +20,7 @@ final class SoapInterpreter extends SoapClient
     private ?string $soapResponse = null;
     private string $soapAction = '';
     private int $soapVersion = 1;
+    private SoapPayload $payload;
 
     public function __construct(SoapPayload $payload)
     {
@@ -43,6 +44,8 @@ final class SoapInterpreter extends SoapClient
         unset($options['ssl_method']);
 
         parent::__construct($payload->wsdl(), $options);
+
+        $this->payload = $payload;
     }
 
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
@@ -60,15 +63,10 @@ final class SoapInterpreter extends SoapClient
         return '';
     }
 
-    /**
-     * @param string $soapAction
-     * @param array $arguments
-     * @param array $options
-     * @param SoapHeader[] $headers
-     * @return SoapRequest
-     */
-    public function request(string $soapAction, array $arguments, array $options, array $headers): SoapRequest
+    public function request(): SoapRequest
     {
+        $headers = $this->payload->headers();
+
         if (count($headers) === 0) {
             /**
              * This avoids an empty `<SOAP-ENV:Header/>` tag.
@@ -78,22 +76,26 @@ final class SoapInterpreter extends SoapClient
             $headers = null;
         }
 
-        $this->__soapCall($soapAction, $arguments, $options, $headers);
+        $this->__soapCall(
+            $this->payload->action(),
+            $this->payload->arguments(),
+            $this->payload->options(),
+            $headers
+        );
 
         return new SoapRequest($this->soapLocation, $this->soapAction, $this->soapVersion, $this->soapRequest);
     }
 
     /**
      * @param string $response
-     * @param string $soapAction
      * @return mixed
      */
-    public function response(string $response, string $soapAction)
+    public function response(string $response)
     {
         $this->soapResponse = $response;
 
         try {
-            $response = $this->__soapCall($soapAction, []);
+            $response = $this->__soapCall($this->payload->action(), []);
         } catch (SoapFault $fault) {
             $this->soapResponse = null;
 

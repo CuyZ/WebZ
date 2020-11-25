@@ -5,6 +5,7 @@ namespace CuyZ\WebZ\Tests\Unit\Soap;
 use CuyZ\WebZ\Soap\Exception\MissingSoapActionException;
 use CuyZ\WebZ\Soap\SoapPayload;
 use PHPUnit\Framework\TestCase;
+use SoapHeader;
 
 /**
  * @covers \CuyZ\WebZ\Soap\SoapPayload
@@ -124,8 +125,8 @@ class SoapPayloadTest extends TestCase
     public function test_set_headers()
     {
         $headers = [
-            new \SoapHeader("http://localhost", "Foo", "a"),
-            new \SoapHeader("http://localhost", "Bar", "b"),
+            new SoapHeader("http://localhost", "Foo", "a"),
+            new SoapHeader("http://localhost", "Bar", "b"),
         ];
 
         $payload = SoapPayload::forWsdl('test.wsdl');
@@ -145,5 +146,33 @@ class SoapPayloadTest extends TestCase
         $payload->withHttpMethod('GET');
 
         self::assertSame('GET', $payload->httpMethod());
+    }
+
+    public function test_set_soap_version_to_1_1()
+    {
+        $payload = SoapPayload::forWsdl('test.wsdl');
+
+        $payload->withSoapVersion11();
+
+        self::assertSame(
+            SoapPayload::DEFAULT_OPTIONS + [
+                'soap_version' => SOAP_1_1,
+            ],
+            $payload->options()
+        );
+    }
+
+    public function test_set_soap_version_to_1_2()
+    {
+        $payload = SoapPayload::forWsdl('test.wsdl');
+
+        $payload->withSoapVersion12();
+
+        self::assertSame(
+            SoapPayload::DEFAULT_OPTIONS + [
+                'soap_version' => SOAP_1_2,
+            ],
+            $payload->options()
+        );
     }
 }

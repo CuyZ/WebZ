@@ -28,12 +28,7 @@ final class SoapToPsrConverter
 
     public function toRequest(): RequestInterface
     {
-        $soapRequest = $this->interpreter->request(
-            $this->payload->action(),
-            $this->payload->arguments(),
-            $this->payload->options(),
-            $this->payload->headers()
-        );
+        $soapRequest = $this->interpreter->request();
 
         $httpMethod = $this->payload->httpMethod();
 
@@ -72,7 +67,7 @@ final class SoapToPsrConverter
      */
     public function fromResponse(ResponseInterface $response)
     {
-        return $this->interpreter->response($response->getBody()->getContents(), $this->payload->action());
+        return $this->interpreter->response($response->getBody()->getContents());
     }
 
     private function requestHeaders(
