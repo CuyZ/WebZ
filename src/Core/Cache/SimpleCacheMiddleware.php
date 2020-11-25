@@ -30,7 +30,7 @@ final class SimpleCacheMiddleware implements Middleware
 
         $ttl = $webService->cacheLifetime();
 
-        if (0 === $ttl) {
+        if ($ttl <= 0) {
             return $next($webService);
         }
 
