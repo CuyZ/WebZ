@@ -2,7 +2,7 @@
 
 namespace CuyZ\WebZ\Tests\Unit\Core\Bus;
 
-use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Core\Bus\BusBuilder;
 use CuyZ\WebZ\Core\Bus\Middleware;
 use CuyZ\WebZ\Core\Bus\NoWebServiceException;
@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
- * @covers \CuyZ\WebZ\Core\Bus\Bus
+ * @covers \CuyZ\WebZ\Core\Bus\WebServiceBus
  */
 class BusTest extends TestCase
 {
@@ -35,7 +35,7 @@ class BusTest extends TestCase
             },
         ]);
 
-        $bus = new Bus($pipeline);
+        $bus = new WebServiceBus($pipeline);
 
         $bus->callAsync();
     }
@@ -70,7 +70,7 @@ class BusTest extends TestCase
             },
         ]);
 
-        $bus = new Bus($pipeline);
+        $bus = new WebServiceBus($pipeline);
 
         $result = $bus->call(new DummyOutputWebService(new stdClass(), $output));
 
@@ -92,7 +92,7 @@ class BusTest extends TestCase
             },
         ]);
 
-        $bus = new Bus($pipeline);
+        $bus = new WebServiceBus($pipeline);
 
         $result = $bus->callAsync(new DummyOutputWebService(new stdClass(), $output));
 
@@ -101,7 +101,7 @@ class BusTest extends TestCase
 
     public function test_creates_a_builder()
     {
-        self::assertInstanceOf(BusBuilder::class, Bus::builder());
+        self::assertInstanceOf(BusBuilder::class, WebServiceBus::builder());
     }
 
     public function test_webservices_have_same_async_call_hash_when_async_call()
@@ -119,7 +119,7 @@ class BusTest extends TestCase
 
         $pipeline = new Pipeline([$middleware]);
 
-        $bus = new Bus($pipeline);
+        $bus = new WebServiceBus($pipeline);
 
         $bus->callAsync(
             new DummyWebService(),

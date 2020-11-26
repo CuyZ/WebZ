@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace CuyZ\WebZ\Tests\Integration\Bus;
 
-use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Tests\Fixture\Transport\DummyExceptionTransport;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyCustomExceptionsWebService;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
@@ -21,7 +21,7 @@ final class ExceptionHandlingTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('foo');
 
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new DummyExceptionTransport('foo'))
             ->build();
 
@@ -33,7 +33,7 @@ final class ExceptionHandlingTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('bar');
 
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new DummyExceptionTransport('foo'))
             ->build();
 

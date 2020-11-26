@@ -46,11 +46,11 @@ The HTTP transport uses [Guzzle][link-guzzle] internally.
 You can configure the Guzzle client creation when instantiating the transport:
 
 ```php
-use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Http\HttpTransport;
 use GuzzleHttp\Client;
 
-$bus = Bus::builder()
+$bus = WebServiceBus::builder()
     ->withTransport(new HttpTransport(fn() => new Client()));
 ```
 
@@ -65,11 +65,11 @@ SOAP requests are sent using Guzzle (to allow for async SOAP calls).
 You can configure the Guzzle client creation when instanciating the transport:
 
 ```php
-use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Soap\SoapTransport;
 use GuzzleHttp\Client;
 
-$bus = Bus::builder()
+$bus = WebServiceBus::builder()
     ->withTransport(SoapTransport::withFactory(fn() => new Client()));
 ```
 
@@ -188,11 +188,11 @@ You then call any WebService via the Bus and a compatible transport will call th
 
 ```php
 use Acme\Place;
-use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Soap\SoapTransport;
 
-$bus = Bus::builder()
+$bus = WebServiceBus::builder()
     ->withTransport(new HttpTransport())
     ->withTransport(new SoapTransport())
     ->build();
@@ -276,7 +276,7 @@ You can find one [on Packagist][link-psr-simple-cache].
 For example with [cache/filesystem-adapter][link-cache-filesystem]:
 
 ```php
-use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Soap\SoapTransport;
 use League\Flysystem\Adapter\Local;
@@ -288,7 +288,7 @@ $filesystem = new Filesystem($filesystemAdapter);
 
 $pool = new FilesystemCachePool($filesystem);
 
-$bus = Bus::builder()
+$bus = WebServiceBus::builder()
     ->withTransport(new HttpTransport())
     ->withTransport(new SoapTransport())
     ->withCache($pool)
@@ -316,7 +316,7 @@ You can find one [on Packagist][link-psr-event-dispatcher].
 For example with [symfony/event-dispatcher][link-symfony-event-dispatcher]:
 
 ```php
-use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Core\Event\BeforeCallEvent;
 use CuyZ\WebZ\Core\Event\FailedCallEvent;
 use CuyZ\WebZ\Core\Event\SuccessfulCallEvent;
@@ -326,7 +326,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 $dispatcher = new EventDispatcher();
 
-$bus = Bus::builder()
+$bus = WebServiceBus::builder()
     ->withTransport(new HttpTransport())
     ->withTransport(new SoapTransport())
     ->withEventDispatcher($dispatcher)

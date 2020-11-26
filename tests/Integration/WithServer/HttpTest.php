@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace CuyZ\WebZ\Tests\Integration\WithServer;
 
-use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
 use CuyZ\WebZ\Http\Transformer\JsonTransformer;
@@ -57,7 +57,7 @@ final class HttpTest extends ServerTestCase
      */
     public function test_returns_a_parsed_result(HttpPayload $payload, $raw)
     {
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new HttpTransport())
             ->build();
 
@@ -72,7 +72,7 @@ final class HttpTest extends ServerTestCase
 
     public function test_does_an_async_call()
     {
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new HttpTransport())
             ->build();
 

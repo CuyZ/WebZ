@@ -5,7 +5,7 @@ namespace CuyZ\WebZ\Tests\Integration\WithServer;
 
 use Cache\Adapter\PHPArray\ArrayCachePool;
 use Cache\Adapter\Void\VoidCachePool;
-use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Soap\SoapTransport;
@@ -35,7 +35,7 @@ final class CachingTest extends ServerTestCase
      */
     public function test_returns_a_memoized_result(WebService $webService)
     {
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new SoapTransport())
             ->withTransport(new HttpTransport())
             ->withCache(new VoidCachePool())
@@ -53,7 +53,7 @@ final class CachingTest extends ServerTestCase
      */
     public function test_returns_a_new_result_for_each_call(WebService $webService)
     {
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new SoapTransport())
             ->withTransport(new HttpTransport())
             ->withCache(new VoidCachePool())
@@ -74,7 +74,7 @@ final class CachingTest extends ServerTestCase
     {
         $pool = new ArrayCachePool();
 
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new SoapTransport())
             ->withTransport(new HttpTransport())
             ->withCache($pool)

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace CuyZ\WebZ\Tests\Integration\Bus;
 
-use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Core\Event\BeforeCallEvent;
 use CuyZ\WebZ\Core\Event\FailedCallEvent;
 use CuyZ\WebZ\Core\Event\SuccessfulCallEvent;
@@ -65,7 +65,7 @@ final class EventDispatchingTest extends TestCase
             });
         }
 
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport($transport)
             ->withEventDispatcher($dispatcher)
             ->build();
@@ -192,7 +192,7 @@ final class EventDispatchingTest extends TestCase
             });
         }
 
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new DummyDynamicExceptionTransport())
             ->withEventDispatcher($dispatcher)
             ->build();

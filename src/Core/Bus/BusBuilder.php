@@ -63,7 +63,7 @@ final class BusBuilder
         return $this;
     }
 
-    public function build(): Bus
+    public function build(): WebServiceBus
     {
         $pipeline = new Pipeline();
 
@@ -88,6 +88,6 @@ final class BusBuilder
         // Needs to be very last (the actual call)
         $pipeline->append(new CallTransportMiddleware($this->transports));
 
-        return new Bus($pipeline);
+        return new WebServiceBus($pipeline);
     }
 }

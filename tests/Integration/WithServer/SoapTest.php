@@ -2,7 +2,7 @@
 
 namespace CuyZ\WebZ\Tests\Integration\WithServer;
 
-use CuyZ\WebZ\Core\Bus\Bus;
+use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Soap\SoapPayload;
 use CuyZ\WebZ\Soap\SoapTransport;
 use CuyZ\WebZ\Tests\Fixture\FakeResult;
@@ -25,7 +25,7 @@ class SoapTest extends ServerTestCase
     {
         $this->expectException(SoapFault::class);
 
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new SoapTransport())
             ->build();
 
@@ -93,7 +93,7 @@ class SoapTest extends ServerTestCase
      */
     public function test_returns_a_result_parsed_as_an_array_synchronously($input, array $expectedOutput)
     {
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new SoapTransport())
             ->build();
 
@@ -111,7 +111,7 @@ class SoapTest extends ServerTestCase
      */
     public function test_returns_a_result_parsed_as_an_array_asynchronously($input, array $expectedOutput)
     {
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new SoapTransport())
             ->build();
 
@@ -131,7 +131,7 @@ class SoapTest extends ServerTestCase
      */
     public function test_returns_a_wrapped_result_synchronously($input, array $expectedOutput)
     {
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new SoapTransport())
             ->build();
 
@@ -154,7 +154,7 @@ class SoapTest extends ServerTestCase
      */
     public function test_returns_a_wrapped_result_asynchronously($input, array $expectedOutput)
     {
-        $bus = Bus::builder()
+        $bus = WebServiceBus::builder()
             ->withTransport(new SoapTransport())
             ->build();
 

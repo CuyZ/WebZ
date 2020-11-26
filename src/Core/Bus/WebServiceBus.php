@@ -8,7 +8,7 @@ use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Core\WebService;
 use GuzzleHttp\Promise\PromiseInterface;
 
-final class Bus
+final class WebServiceBus
 {
     private Pipeline $pipeline;
 
