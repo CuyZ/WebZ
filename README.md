@@ -12,7 +12,7 @@ WebZ is a library that aims to abstract calls to different WebServices (in HTTP 
 It automatically handles caching, events and parsing results to an array.
 
 ```php
-$bus = Bus::builder()
+$bus = WebServiceBus::builder()
     ->withTransport(new HttpTransport())
     ->withTransport(new SoapTransport())
     ->withCache(new SomeCacheStore())
@@ -420,7 +420,7 @@ class MyTransport implements Transport
 You then need to register it in the Bus:
 
 ```php
-$bus = Bus::builder()
+$bus = WebServiceBus::builder()
     // The order is important, transports are called in order
     // and the first compatible one is called.
     ->withTransport(new MyTransport())
