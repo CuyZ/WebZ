@@ -48,6 +48,14 @@ final class SoapInterpreter extends SoapClient
         $this->payload = $payload;
     }
 
+    /**
+     * @param string $request
+     * @param string $location
+     * @param string $action
+     * @param int $version
+     * @param int|bool $one_way
+     * @return string
+     */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
         if (null !== $this->soapResponse) {
