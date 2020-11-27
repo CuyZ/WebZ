@@ -2,7 +2,6 @@
 
 namespace CuyZ\WebZ\Tests\Unit\Core\Cache;
 
-use Cache\Adapter\PHPArray\ArrayCachePool;
 use CuyZ\WebZ\Core\Bus\Pipeline\Next;
 use CuyZ\WebZ\Core\Cache\CorruptCacheEntryException;
 use CuyZ\WebZ\Core\Cache\SimpleCacheMiddleware;
@@ -13,6 +12,8 @@ use CuyZ\WebZ\Tests\Fixture\WebService\DummyWebService;
 use GuzzleHttp\Promise\FulfilledPromise;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Psr16Cache;
 
 /**
  * @covers \CuyZ\WebZ\Core\Cache\SimpleCacheMiddleware
@@ -22,7 +23,7 @@ class SimpleCacheMiddlewareTest extends TestCase
     public function test_ignores_incompatible_webservices()
     {
         $webservice = new DummyWebService(new stdClass());
-        $middleware = new SimpleCacheMiddleware(new ArrayCachePool());
+        $middleware = new SimpleCacheMiddleware(new Psr16Cache(new ArrayAdapter()));
 
         $result = Mocks::resultOk([1]);
 
@@ -48,7 +49,7 @@ class SimpleCacheMiddlewareTest extends TestCase
     public function test_does_not_store_in_cache_if_TTL_is_0()
     {
         $webservice = new DummyCacheWebService(new stdClass(), 0);
-        $middleware = new SimpleCacheMiddleware(new ArrayCachePool());
+        $middleware = new SimpleCacheMiddleware(new Psr16Cache(new ArrayAdapter()));
 
         $result = Mocks::resultOk([1]);
 
@@ -74,7 +75,7 @@ class SimpleCacheMiddlewareTest extends TestCase
     public function test_stores_the_result_in_cache_if_TTL_is_greater_than_0()
     {
         $webservice = new DummyCacheWebService(new stdClass(), 10);
-        $middleware = new SimpleCacheMiddleware(new ArrayCachePool());
+        $middleware = new SimpleCacheMiddleware(new Psr16Cache(new ArrayAdapter()));
 
         $result = Mocks::resultOk([1]);
 
@@ -102,10 +103,12 @@ class SimpleCacheMiddlewareTest extends TestCase
         $this->expectException(CorruptCacheEntryException::class);
 
         $webservice = new DummyCacheWebService(new stdClass(), 10);
-        $pool = new ArrayCachePool();
-        $middleware = new SimpleCacheMiddleware($pool);
+        $pool = new ArrayAdapter();
+        $middleware = new SimpleCacheMiddleware(new Psr16Cache($pool));
 
-        $pool->set($webservice->getPayloadHash(), new stdClass());
+        $item = $pool->getItem($webservice->getPayloadHash());
+        $item->set(new stdClass());
+        $pool->save($item);
 
         $next = new Next(fn() => Mocks::promiseOk());
 
@@ -115,10 +118,12 @@ class SimpleCacheMiddlewareTest extends TestCase
     public function test_skips_corrupt_cache_entries()
     {
         $webservice = new DummyCacheWebService(new stdClass(), 10);
-        $pool = new ArrayCachePool();
-        $middleware = new SimpleCacheMiddleware($pool, true);
+        $pool = new ArrayAdapter();
+        $middleware = new SimpleCacheMiddleware(new Psr16Cache($pool), true);
 
-        $pool->set($webservice->getPayloadHash(), new stdClass());
+        $item = $pool->getItem($webservice->getPayloadHash());
+        $item->set(new stdClass());
+        $pool->save($item);
 
         $next = new Next(fn() => Mocks::promiseOk());
 
@@ -130,7 +135,7 @@ class SimpleCacheMiddlewareTest extends TestCase
     public function test_marks_a_result_as_coming_from_the_cache()
     {
         $webservice = new DummyCacheWebService(new stdClass(), 10);
-        $middleware = new SimpleCacheMiddleware(new ArrayCachePool());
+        $middleware = new SimpleCacheMiddleware(new Psr16Cache(new ArrayAdapter()));
 
         $result = Mocks::resultOk([1]);
 

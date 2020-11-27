@@ -3,14 +3,15 @@ declare(strict_types=1);
 
 namespace CuyZ\WebZ\Tests\Integration\WithServer;
 
-use Cache\Adapter\PHPArray\ArrayCachePool;
-use Cache\Adapter\Void\VoidCachePool;
 use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Soap\SoapTransport;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyCacheWebService;
 use CuyZ\WebZ\Tests\Integration\ServerTestCase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Adapter\NullAdapter;
+use Symfony\Component\Cache\Psr16Cache;
 
 /**
  * @coversNothing
@@ -38,7 +39,7 @@ final class CachingTest extends ServerTestCase
         $bus = WebServiceBus::builder()
             ->withTransport(new SoapTransport())
             ->withTransport(new HttpTransport())
-            ->withCache(new VoidCachePool())
+            ->withCache(new Psr16Cache(new NullAdapter()))
             ->build();
 
         $result1 = $bus->call($webService);
@@ -56,7 +57,7 @@ final class CachingTest extends ServerTestCase
         $bus = WebServiceBus::builder()
             ->withTransport(new SoapTransport())
             ->withTransport(new HttpTransport())
-            ->withCache(new VoidCachePool())
+            ->withCache(new Psr16Cache(new NullAdapter()))
             ->withoutMemoization()
             ->build();
 
@@ -72,17 +73,17 @@ final class CachingTest extends ServerTestCase
      */
     public function test_returns_a_cached_result(WebService $webService)
     {
-        $pool = new ArrayCachePool();
+        $pool = new ArrayAdapter();
 
         $bus = WebServiceBus::builder()
             ->withTransport(new SoapTransport())
             ->withTransport(new HttpTransport())
-            ->withCache($pool)
+            ->withCache(new Psr16Cache($pool))
             ->build();
 
         $result1 = $bus->call($webService);
 
-        self::assertTrue($pool->has($webService->getPayloadHash()));
+        self::assertTrue($pool->hasItem($webService->getPayloadHash()));
 
         $result2 = $bus->call($webService);
 

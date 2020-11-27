@@ -41,9 +41,6 @@
     },
     "require-dev": {
         "ext-soap": "*",
-        "cache/array-adapter": "^1.0",
-        "cache/filesystem-adapter": "^1.0",
-        "cache/void-adapter": "^1.0",
         "laminas/laminas-soap": "^2.8",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "0.12.56",
@@ -52,6 +49,7 @@
         "psr/http-server-handler": "^1.0",
         "react/event-loop": "^1.1.1",
         "react/http": "^1.1.0",
+        "symfony/cache": "^5.1",
         "symfony/event-dispatcher": "^5.1",
         "vimeo/psalm": "^4.0"
     },
