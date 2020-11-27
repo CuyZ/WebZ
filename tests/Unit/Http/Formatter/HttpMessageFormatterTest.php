@@ -15,7 +15,7 @@ use Psr\Http\Message\ResponseInterface;
  */
 class HttpMessageFormatterTest extends TestCase
 {
-    private function steamFor(string $input): Stream
+    private function streamFor(string $input): Stream
     {
         $stream = fopen('php://temp', 'r+');
 
@@ -29,7 +29,7 @@ class HttpMessageFormatterTest extends TestCase
 
     public function requestsDataProvider()
     {
-        $body = $this->steamFor('hello world');
+        $body = $this->streamFor('hello world');
 
         $request = (new Request('POST', 'https://localhost'))
             ->withRequestTarget('/hello?foo=bar')
@@ -79,7 +79,7 @@ Content-Length: 11
 REQUEST
         ];
 
-        $body = $this->steamFor('foo');
+        $body = $this->streamFor('foo');
         $body->detach();
 
         $request = (new Request('GET', 'https://localhost'))
@@ -94,7 +94,7 @@ Host: localhost
 REQUEST
         ];
 
-        $body = $this->steamFor("\x00");
+        $body = $this->streamFor("\x00");
 
         $request = (new Request('GET', 'https://localhost'))
             ->withBody($body);
@@ -128,7 +128,7 @@ REQUEST
 
     public function responsesDataProvider()
     {
-        $body = $this->steamFor('hello world');
+        $body = $this->streamFor('hello world');
 
         $response = (new Response(404))
             ->withHeader('X-Foo', 'bar')
@@ -174,7 +174,7 @@ Content-Length: 11
 RESPONSE
         ];
 
-        $body = $this->steamFor('foo');
+        $body = $this->streamFor('foo');
         $body->detach();
 
         $response = (new Response(200))
@@ -188,7 +188,7 @@ HTTP/1.1 200 OK
 RESPONSE
         ];
 
-        $body = $this->steamFor("\x00");
+        $body = $this->streamFor("\x00");
 
         $response = (new Response(200))
             ->withBody($body);
