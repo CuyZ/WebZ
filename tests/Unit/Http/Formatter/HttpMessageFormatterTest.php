@@ -3,10 +3,9 @@
 namespace CuyZ\WebZ\Tests\Unit\Http\Formatter;
 
 use CuyZ\WebZ\Http\Formatter\HttpMessageFormatter;
-use CuyZ\WebZ\Tests\Fixture\Server\HttpHandler;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Utils;
+use GuzzleHttp\Psr7\Stream;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -16,9 +15,21 @@ use Psr\Http\Message\ResponseInterface;
  */
 class HttpMessageFormatterTest extends TestCase
 {
+    private function steamFor(string $input): Stream
+    {
+        $stream = fopen('php://temp', 'r+');
+
+        if ($input !== '') {
+            fwrite($stream, $input);
+            fseek($stream, 0);
+        }
+
+        return new Stream($stream);
+    }
+
     public function requestsDataProvider()
     {
-        $body = Utils::streamFor('hello world');
+        $body = $this->steamFor('hello world');
 
         $request = (new Request('POST', 'https://localhost'))
             ->withRequestTarget('/hello?foo=bar')
@@ -68,7 +79,7 @@ Content-Length: 11
 REQUEST
         ];
 
-        $body = Utils::streamFor('foo');
+        $body = $this->steamFor('foo');
         $body->detach();
 
         $request = (new Request('GET', 'https://localhost'))
@@ -83,7 +94,7 @@ Host: localhost
 REQUEST
         ];
 
-        $body = Utils::streamFor("\x00");
+        $body = $this->steamFor("\x00");
 
         $request = (new Request('GET', 'https://localhost'))
             ->withBody($body);
@@ -117,7 +128,7 @@ REQUEST
 
     public function responsesDataProvider()
     {
-        $body = Utils::streamFor('hello world');
+        $body = $this->steamFor('hello world');
 
         $response = (new Response(404))
             ->withHeader('X-Foo', 'bar')
@@ -163,7 +174,7 @@ Content-Length: 11
 RESPONSE
         ];
 
-        $body = Utils::streamFor('foo');
+        $body = $this->steamFor('foo');
         $body->detach();
 
         $response = (new Response(200))
@@ -177,7 +188,7 @@ HTTP/1.1 200 OK
 RESPONSE
         ];
 
-        $body = Utils::streamFor("\x00");
+        $body = $this->steamFor("\x00");
 
         $response = (new Response(200))
             ->withBody($body);
