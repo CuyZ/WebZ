@@ -1,11 +1,42 @@
 site_name: WebZ
-site_description: ''
-site_author: 'Nathan Boiron'
-docs_dir: docs/
+site_description: 'Library that aims to abstract calls to different WebServices (in HTTP or SOAP)'
+site_author: 'CuyZ'
+docs_dir: docs
 repo_name: 'cuyz/webz'
 repo_url: 'https://github.com/CuyZ/WebZ'
 theme:
   name: 'material'
+  palette:
+    scheme: dracula
+    primary: pink
+    accent: pink
+  features:
+    - navigation.sections
+
+extra_css:
+  - css/dracula.css
+
+markdown_extensions:
+  - pymdownx.highlight:
+      extend_pygments_lang:
+        - name: php
+          lang: php
+          options:
+            startinline: true
+  - pymdownx.superfences
 
 nav:
-  - Home: index.md
+  - Introduction: index.md
+  - Why?: why.md
+  - Getting Started: getting-started.md
+  - Transports:
+    - HTTP: transports/http.md
+    - SOAP: transports/soap.md
+  - Services:
+    - Cache: services/cache.md
+    - Events: services/events.md
+    - Exceptions: services/exceptions.md
+  - Advanced:
+    - Transport: advanced/transport.md
+    - Async Transport: advanced/async-transport.md
+    - Contribute: advanced/contribute.md
