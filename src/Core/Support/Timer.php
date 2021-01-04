@@ -30,6 +30,7 @@ final class Timer
             $this->stop();
         }
 
+        /** @psalm-suppress RedundantCast */
         return $this->seconds ??= ((float)$this->stopTime) - $this->startTime;
     }
 
