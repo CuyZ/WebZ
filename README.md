@@ -1,13 +1,13 @@
 # WebZ
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
+[![Master][ico-workflow]][link-workflow]
 [![Total Downloads][ico-downloads]][link-downloads]
 [![Software License][ico-license]](LICENSE)
-[![Master][ico-workflow]][link-workflow]
 
 :warning: This project is in the experimental phase. The API may change any time.
 
-Complete documentation is available at: [https://cuyz.github.io/WebZ/](https://cuyz.github.io/WebZ/)
+The complete documentation is available at: [https://cuyz.io/WebZ/](https://cuyz.io/WebZ/)
 
 WebZ is a library that aims to abstract calls to different WebServices (in HTTP or SOAP).
 
@@ -35,6 +35,10 @@ foreach ($promises as $promise) {
 }
 ``` 
 
+## Licence
+
+The MIT License (MIT). Please see [License File][link-licence] for more information.
+
 [ico-version]: https://img.shields.io/packagist/v/cuyz/webz.svg
 [ico-downloads]: https://img.shields.io/packagist/dt/cuyz/webz.svg
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg
@@ -42,4 +46,5 @@ foreach ($promises as $promise) {
 
 [link-packagist]: https://packagist.org/packages/cuyz/webz
 [link-downloads]: https://packagist.org/packages/cuyz/webz
+[link-licence]: https://github.com/CuyZ/WebZ/blob/master/LICENCE
 [link-workflow]: https://github.com/CuyZ/WebZ/actions?query=workflow%3ATests
