@@ -1,6 +1,7 @@
 site_name: WebZ
 site_description: 'Library that aims to abstract calls to different WebServices (in HTTP or SOAP)'
 site_author: 'CuyZ'
+site_url: https://cuyz.io/webz
 docs_dir: docs
 repo_name: 'cuyz/webz'
 repo_url: 'https://github.com/CuyZ/WebZ'
