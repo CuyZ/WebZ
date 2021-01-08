@@ -33,7 +33,7 @@ class SoapToPsrConverterTest extends TestCase
         self::assertSame(
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://localhost:8080/soap" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://xml.apache.org/xml-soap" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><SOAP-ENV:Body><ns1:returnValue><value xsi:type="ns2:Map"><item><key xsi:type="xsd:string">foo</key><value xsi:type="xsd:string">bar</value></item></value></ns1:returnValue></SOAP-ENV:Body></SOAP-ENV:Envelope>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://localhost:8080/soap" xmlns:ns2="http://xml.apache.org/xml-soap" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><SOAP-ENV:Body><ns1:returnValue><value SOAP-ENC:arrayType="ns2:Map[1]" xsi:type="SOAP-ENC:Array"><item xsi:type="ns2:Map"><item><key xsi:type="xsd:string">foo</key><value xsi:type="xsd:string">bar</value></item></item></value></ns1:returnValue></SOAP-ENV:Body></SOAP-ENV:Envelope>
 
 XML,
             $request->getBody()->getContents()
@@ -42,7 +42,7 @@ XML,
         self::assertSame(
             [
                 'Host' => ['localhost:8080'],
-                'Content-Length' => ['634'],
+                'Content-Length' => ['705'],
                 'SOAPAction' => ['http://localhost:8080/soap#returnValue'],
                 'Content-Type' => ['text/xml; charset="utf-8"'],
             ],
@@ -69,7 +69,7 @@ XML,
         self::assertSame(
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" xmlns:ns1="http://localhost:8080/soap" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://xml.apache.org/xml-soap" xmlns:enc="http://www.w3.org/2003/05/soap-encoding"><env:Body><ns1:returnValue env:encodingStyle="http://www.w3.org/2003/05/soap-encoding"><value xsi:type="ns2:Map"><item><key xsi:type="xsd:string">foo</key><value xsi:type="xsd:string">bar</value></item></value></ns1:returnValue></env:Body></env:Envelope>
+<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" xmlns:ns1="http://localhost:8080/soap" xmlns:ns2="http://xml.apache.org/xml-soap" xmlns:enc="http://www.w3.org/2003/05/soap-encoding" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><env:Body><ns1:returnValue env:encodingStyle="http://www.w3.org/2003/05/soap-encoding"><value enc:itemType="ns2:Map" enc:arraySize="1" xsi:type="enc:Array"><item xsi:type="ns2:Map"><item><key xsi:type="xsd:string">foo</key><value xsi:type="xsd:string">bar</value></item></item></value></ns1:returnValue></env:Body></env:Envelope>
 
 XML,
             $request->getBody()->getContents()
@@ -78,7 +78,7 @@ XML,
         self::assertSame(
             [
                 'Host' => ['localhost:8080'],
-                'Content-Length' => ['593'],
+                'Content-Length' => ['668'],
                 'Content-Type' => ['application/soap+xml; charset="utf-8"; action="http://localhost:8080/soap#returnValue"'],
             ],
             $request->getHeaders()

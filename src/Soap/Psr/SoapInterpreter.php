@@ -63,7 +63,7 @@ final class SoapInterpreter extends SoapClient
         }
 
         $this->soapLocation = $location;
-        $this->soapAction = $action;
+        $this->soapAction = $action ?: $this->payload->action();
         $this->soapVersion = $version;
         $this->soapRequest = $request;
 
@@ -86,7 +86,7 @@ final class SoapInterpreter extends SoapClient
 
         $this->__soapCall(
             $this->payload->action(),
-            $this->payload->arguments(),
+            ['parameters' => $this->payload->arguments()],
             $this->payload->options(),
             $headers
         );
