@@ -44,3 +44,5 @@ psalm:
 static:
 	php vendor/bin/phpstan analyse
 	php vendor/bin/psalm
+
+.PHONY: install start-server stop-server test test-unit test-integration coverage phpstan psalm static
