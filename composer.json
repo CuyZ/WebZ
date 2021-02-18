@@ -41,7 +41,7 @@
     },
     "require-dev": {
         "ext-soap": "*",
-        "laminas/laminas-soap": "^2.8",
+        "laminas/laminas-soap": "^2.9",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "0.12.56",
         "phpstan/phpstan-strict-rules": "0.12.5",
