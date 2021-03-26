@@ -26,12 +26,14 @@ final class HttpHandler implements RequestHandlerInterface
                 return $this->returnValueAction($request);
             case 'random':
                 return $this->randomAction($request);
+            case 'empty':
+                return $this->emptyAction();
         }
 
         return new Response(404);
     }
 
-    private function returnValueAction(ServerRequestInterface $request)
+    private function returnValueAction(ServerRequestInterface $request): Response
     {
         if ($request->getMethod() === 'POST') {
             $value = $request->getBody()->getContents();
@@ -42,7 +44,7 @@ final class HttpHandler implements RequestHandlerInterface
         return new Response(200, ['Content-Type' => $request->getHeader('Content-Type')], $value);
     }
 
-    private function randomAction(ServerRequestInterface $request)
+    private function randomAction(ServerRequestInterface $request): Response
     {
         $query = $request->getQueryParams();
 
@@ -55,6 +57,11 @@ final class HttpHandler implements RequestHandlerInterface
             ['Content-Type' => 'text/plain'],
             Utils::random($query['input'])
         );
+    }
+
+    private function emptyAction(): Response
+    {
+        return new Response(204);
     }
 
     public static function route(string $route, array $query = []): string

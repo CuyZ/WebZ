@@ -148,4 +148,22 @@ RESPONSE,
             $result->responseTrace()
         );
     }
+
+    public function test_handles_a_204_response(): void
+    {
+        $payload = HttpPayload::request('POST', HttpHandler::route('empty'))
+            ->withTransformer(new ScalarTransformer());
+
+        $bus = WebServiceBus::builder()
+            ->withTransport(new HttpTransport())
+            ->build();
+
+        $webService = new DummyWrapResultWebService($payload);
+
+        /** @var FakeResult $result */
+        $result = $bus->call($webService);
+
+        self::assertInstanceOf(FakeResult::class, $result);
+        self::assertSame(['value' => ''], $result->raw);
+    }
 }
