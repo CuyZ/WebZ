@@ -3,7 +3,7 @@
 namespace CuyZ\WebZ\Tests\Unit\Core\Guzzle;
 
 use CuyZ\WebZ\Core\Guzzle\ClosureFactory;
-use GuzzleHttp\Client;
+use CuyZ\WebZ\Core\Guzzle\HttpClient;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,7 +14,7 @@ class ClosureFactoryTest extends TestCase
     public function test_executes_the_internal_closure()
     {
         $receivedHash = null;
-        $client = new Client();
+        $client = new HttpClient();
 
         $factory = new ClosureFactory(function (?string $asyncCallHash) use ($client, &$receivedHash) {
             $receivedHash = $asyncCallHash;

@@ -2,9 +2,7 @@
 
 namespace CuyZ\WebZ\Core\Guzzle;
 
-use GuzzleHttp\Client;
-
 interface GuzzleClientFactory
 {
-    public function build(?string $asyncCallHash): Client;
+    public function build(?string $asyncCallHash): HttpClient;
 }

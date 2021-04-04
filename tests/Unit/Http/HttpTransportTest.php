@@ -3,12 +3,12 @@
 namespace CuyZ\WebZ\Tests\Unit\Http;
 
 use CuyZ\WebZ\Core\Guzzle\GuzzleClientFactory;
+use CuyZ\WebZ\Core\Guzzle\HttpClient;
 use CuyZ\WebZ\Core\Result\RawResult;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
 use CuyZ\WebZ\Http\Transformer\ScalarTransformer;
 use CuyZ\WebZ\Tests\Fixture\Mocks;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -25,13 +25,13 @@ class HttpTransportTest extends TestCase
         return [
             [null],
 
-            [fn() => new Client()],
+            [fn() => new HttpClient()],
 
             [
                 new class implements GuzzleClientFactory {
-                    public function build(?string $asyncCallHash): Client
+                    public function build(?string $asyncCallHash): HttpClient
                     {
-                        return new Client();
+                        return new HttpClient();
                     }
                 },
             ],

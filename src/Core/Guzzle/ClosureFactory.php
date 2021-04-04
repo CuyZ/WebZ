@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace CuyZ\WebZ\Core\Guzzle;
 
 use Closure;
-use GuzzleHttp\Client;
 
 final class ClosureFactory implements GuzzleClientFactory
 {
@@ -15,11 +14,7 @@ final class ClosureFactory implements GuzzleClientFactory
         $this->closure = $closure;
     }
 
-    /**
-     * @param string|null $asyncCallHash
-     * @return Client
-     */
-    public function build(?string $asyncCallHash): Client
+    public function build(?string $asyncCallHash): HttpClient
     {
         return ($this->closure)($asyncCallHash);
     }

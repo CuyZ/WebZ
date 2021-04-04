@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace CuyZ\WebZ\Tests\Fixture;
 
 use Closure;
+use CuyZ\WebZ\Core\Guzzle\HttpClient;
 use CuyZ\WebZ\Core\Result\RawResult;
 use CuyZ\WebZ\Core\Result\Result;
 use CuyZ\WebZ\Core\Support\Timer;
 use Exception;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -28,7 +28,7 @@ final class Mocks
 
     /**
      * @param ResponseInterface|RequestException ...$responses
-     * @return Client
+     * @return HttpClient
      */
     public static function httpClient(...$responses)
     {
@@ -36,7 +36,7 @@ final class Mocks
 
         $handlerStack = HandlerStack::create($mock);
 
-        return new Client(['handler' => $handlerStack]);
+        return new HttpClient(['handler' => $handlerStack]);
     }
 
     /**

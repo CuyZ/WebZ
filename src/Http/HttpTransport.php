@@ -6,15 +6,13 @@ namespace CuyZ\WebZ\Http;
 use Closure;
 use CuyZ\WebZ\Core\Guzzle\AutoFactory;
 use CuyZ\WebZ\Core\Guzzle\GuzzleClientFactory;
+use CuyZ\WebZ\Core\Guzzle\HttpClient;
 use CuyZ\WebZ\Core\Result\RawResult;
 use CuyZ\WebZ\Core\Transport\AsyncTransport;
 use CuyZ\WebZ\Core\Transport\Transport;
 use CuyZ\WebZ\Http\Formatter\HttpMessageFormatter;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
 use CuyZ\WebZ\Http\Transformer\JsonTransformer;
-use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -58,34 +56,13 @@ final class HttpTransport implements Transport, AsyncTransport
         return null;
     }
 
-    private function sendRequest(HttpPayload $payload, Client $client): PromiseInterface
+    private function sendRequest(HttpPayload $payload, HttpClient $client): PromiseInterface
     {
-        /**
-         * @psalm-suppress DeprecatedMethod
-         * @var array $config
-         */
-        $config = $client->getConfig();
-
-        /** @var HandlerStack|callable $handler */
-        $handler = $config['handler'] ?? HandlerStack::create();
-
-        if (!$handler instanceof HandlerStack) {
-            /** @psalm-suppress MixedArgumentTypeCoercion */
-            $handler = HandlerStack::create($handler);
-        }
-
         $request = null;
 
-        /** @psalm-suppress MixedArgumentTypeCoercion */
-        $handler->push(Middleware::tap(
-            function (RequestInterface $req) use (&$request): void {
-                $request = $req;
-            }
-        ));
-
-        $config['handler'] = $handler;
-
-        $client = new Client($config);
+        $client->onRequest(function (RequestInterface $req) use (&$request): void {
+            $request = $req;
+        });
 
         $promise = $client->requestAsync(
             $payload->method(),
