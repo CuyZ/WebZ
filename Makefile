@@ -33,7 +33,7 @@ test-integration: start-server
 	$(MAKE) stop-server
 
 coverage:
-	php vendor/bin/phpunit --coverage-text --testsuite=unit
+	php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-text --testsuite=unit
 
 phpstan:
 	php vendor/bin/phpstan analyse
