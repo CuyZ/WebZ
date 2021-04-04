@@ -10,7 +10,7 @@ All this code could be repeated in multiple places and projects:
 ```php
 use GuzzleHttp\Client;
 
-$client = new CLient();
+$client = new Client();
 $response = $client->request('GET', 'https://api.example.com/get-data');
 
 $data = json_decode(
