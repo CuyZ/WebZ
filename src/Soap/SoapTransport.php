@@ -7,7 +7,7 @@ namespace CuyZ\WebZ\Soap;
 use CuyZ\WebZ\Core\Result\RawResult;
 use CuyZ\WebZ\Core\Transport\AsyncTransport;
 use CuyZ\WebZ\Core\Transport\Transport;
-use CuyZ\WebZ\Soap\Client\GuzzleSoapSender;
+use CuyZ\WebZ\Soap\Client\HttpSoapSender;
 use CuyZ\WebZ\Soap\Client\SoapSender;
 use CuyZ\WebZ\Soap\Exception\SoapExtensionNotInstalledException;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -28,7 +28,7 @@ final class SoapTransport implements Transport, AsyncTransport
         }
 
         if (null === $sender) {
-            $this->sender = new GuzzleSoapSender();
+            $this->sender = new HttpSoapSender();
         } else {
             $this->sender = $sender;
         }

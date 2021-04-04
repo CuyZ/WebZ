@@ -17,7 +17,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 use SoapFault;
 
-final class GuzzleSoapSender implements SoapSender
+final class HttpSoapSender implements SoapSender
 {
     private HttpClientFactory $factory;
     private HttpMessageFormatter $formatter;

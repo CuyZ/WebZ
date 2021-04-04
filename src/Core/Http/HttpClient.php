@@ -5,11 +5,11 @@ namespace CuyZ\WebZ\Core\Http;
 
 use Closure;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Promise\PromiseInterface;
+use Psr\Http\Client\RequestExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
@@ -39,7 +39,7 @@ final class HttpClient
     }
 
     /**
-     * @param ResponseInterface|RequestException ...$responses
+     * @param ResponseInterface|RequestExceptionInterface ...$responses
      * @return HttpClient
      */
     public static function mock(...$responses): HttpClient
