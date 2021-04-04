@@ -16,17 +16,6 @@ use stdClass;
  */
 class SoapTransportTest extends TestCase
 {
-    public function test_returns_null_for_an_incompatible_payload()
-    {
-        $transport = new SoapTransport();
-
-        $result = $transport->send(new stdClass());
-        $resultAsync = $transport->sendAsync(new stdClass(), null);
-
-        self::assertNull($result);
-        self::assertNull($resultAsync);
-    }
-
     public function soapDataProvider(): array
     {
         return [

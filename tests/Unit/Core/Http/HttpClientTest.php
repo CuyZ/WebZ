@@ -3,11 +3,10 @@
 namespace CuyZ\WebZ\Tests\Unit\Core\Http;
 
 use CuyZ\WebZ\Core\Http\HttpClient;
-use CuyZ\WebZ\Core\Http\SharedClientsFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \CuyZ\WebZ\Core\Http\HttpClientTest
+ * @covers \CuyZ\WebZ\Core\Http\HttpClient
  */
 class HttpClientTest extends TestCase
 {

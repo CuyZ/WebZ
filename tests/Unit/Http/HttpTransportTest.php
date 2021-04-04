@@ -20,39 +20,6 @@ use stdClass;
  */
 class HttpTransportTest extends TestCase
 {
-    public function factoriesDataProvider(): array
-    {
-        return [
-            [null],
-
-            [fn() => HttpClient::create()],
-
-            [
-                new class implements HttpClientFactory {
-                    public function build(?string $asyncCallHash): HttpClient
-                    {
-                        return HttpClient::create();
-                    }
-                },
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider factoriesDataProvider
-     * @param mixed $clientFactory
-     */
-    public function test_returns_null_for_an_incompatible_payload($clientFactory)
-    {
-        $transport = new HttpTransport($clientFactory);
-
-        $result = $transport->send(new stdClass());
-        $resultAsync = $transport->sendAsync(new stdClass(), null);
-
-        self::assertNull($result);
-        self::assertNull($resultAsync);
-    }
-
     public function test_returns_a_raw_result()
     {
         $payload = HttpPayload::request('GET', 'https://localhost')
