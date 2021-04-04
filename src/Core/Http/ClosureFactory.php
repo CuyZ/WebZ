@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace CuyZ\WebZ\Core\Guzzle;
+namespace CuyZ\WebZ\Core\Http;
 
 use Closure;
 
-final class ClosureFactory implements GuzzleClientFactory
+final class ClosureFactory implements HttpClientFactory
 {
     private Closure $closure;
 

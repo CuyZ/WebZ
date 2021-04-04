@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace CuyZ\WebZ\Soap;
 
-use Closure;
-use CuyZ\WebZ\Core\Guzzle\GuzzleClientFactory;
 use CuyZ\WebZ\Core\Result\RawResult;
 use CuyZ\WebZ\Core\Transport\AsyncTransport;
 use CuyZ\WebZ\Core\Transport\Transport;
@@ -17,15 +15,6 @@ use GuzzleHttp\Promise\PromiseInterface;
 final class SoapTransport implements Transport, AsyncTransport
 {
     private SoapSender $sender;
-
-    /**
-     * @param GuzzleClientFactory|Closure|null $factory
-     * @return SoapTransport
-     */
-    public static function withFactory($factory = null): SoapTransport
-    {
-        return new SoapTransport(new GuzzleSoapSender($factory));
-    }
 
     public function __construct(?SoapSender $sender = null)
     {

@@ -2,8 +2,8 @@
 
 namespace CuyZ\WebZ\Tests\Unit\Http;
 
-use CuyZ\WebZ\Core\Guzzle\GuzzleClientFactory;
-use CuyZ\WebZ\Core\Guzzle\HttpClient;
+use CuyZ\WebZ\Core\Http\HttpClientFactory;
+use CuyZ\WebZ\Core\Http\HttpClient;
 use CuyZ\WebZ\Core\Result\RawResult;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Http\Payload\HttpPayload;
@@ -25,13 +25,13 @@ class HttpTransportTest extends TestCase
         return [
             [null],
 
-            [fn() => new HttpClient()],
+            [fn() => HttpClient::create()],
 
             [
-                new class implements GuzzleClientFactory {
+                new class implements HttpClientFactory {
                     public function build(?string $asyncCallHash): HttpClient
                     {
-                        return new HttpClient();
+                        return HttpClient::create();
                     }
                 },
             ],
@@ -58,7 +58,7 @@ class HttpTransportTest extends TestCase
         $payload = HttpPayload::request('GET', 'https://localhost')
             ->withTransformer(new ScalarTransformer());
 
-        $client = Mocks::httpClient(
+        $client = HttpClient::mock(
             new Response(200, [], 'foo'),
             new Response(200, [], 'bar')
         );
@@ -82,7 +82,7 @@ class HttpTransportTest extends TestCase
 
         $payload = HttpPayload::request('GET', 'https://localhost');
 
-        $client = Mocks::httpClient(new RequestException('some_error', new Request('GET', 'test')));
+        $client = HttpClient::mock(new RequestException('some_error', new Request('GET', 'test')));
 
         $transport = new HttpTransport(fn() => $client);
         $transport->send($payload);

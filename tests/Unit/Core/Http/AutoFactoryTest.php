@@ -1,14 +1,14 @@
 <?php
 
-namespace CuyZ\WebZ\Tests\Unit\Core\Guzzle;
+namespace CuyZ\WebZ\Tests\Unit\Core\Http;
 
-use CuyZ\WebZ\Core\Guzzle\AutoFactory;
-use CuyZ\WebZ\Core\Guzzle\GuzzleClientFactory;
-use CuyZ\WebZ\Core\Guzzle\HttpClient;
+use CuyZ\WebZ\Core\Http\AutoFactory;
+use CuyZ\WebZ\Core\Http\HttpClientFactory;
+use CuyZ\WebZ\Core\Http\HttpClient;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \CuyZ\WebZ\Core\Guzzle\AutoFactory
+ * @covers \CuyZ\WebZ\Core\Http\AutoFactory
  */
 class AutoFactoryTest extends TestCase
 {
@@ -48,7 +48,7 @@ class AutoFactoryTest extends TestCase
     public function test_wraps_a_closure()
     {
         $receivedHash = null;
-        $client = new HttpClient();
+        $client = HttpClient::create();
 
         $factory = new AutoFactory(function (?string $asyncCallHash) use ($client, &$receivedHash) {
             $receivedHash = $asyncCallHash;
@@ -64,9 +64,9 @@ class AutoFactoryTest extends TestCase
 
     public function test_wraps_factory_class()
     {
-        $client = new HttpClient();
+        $client = HttpClient::create();
 
-        $wrapped = new class($client) implements GuzzleClientFactory {
+        $wrapped = new class($client) implements HttpClientFactory {
             public ?string $receivedHash = null;
             private HttpClient $client;
 

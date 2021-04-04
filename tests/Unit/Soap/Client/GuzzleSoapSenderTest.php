@@ -2,10 +2,10 @@
 
 namespace CuyZ\WebZ\Tests\Unit\Soap\Client;
 
+use CuyZ\WebZ\Core\Http\HttpClient;
 use CuyZ\WebZ\Core\Result\RawResult;
 use CuyZ\WebZ\Soap\Client\GuzzleSoapSender;
 use CuyZ\WebZ\Soap\SoapPayload;
-use CuyZ\WebZ\Tests\Fixture\Mocks;
 use CuyZ\WebZ\Tests\Fixture\Soap\Server\FakeSoapServerClass;
 use Exception;
 use GuzzleHttp\Psr7\Response;
@@ -63,7 +63,7 @@ XML;
      */
     public function test_returns_a_soap_result($response, array $data, ?string $exceptionClass)
     {
-        $sender = new GuzzleSoapSender(Mocks::httpClientFactory($response));
+        $sender = new GuzzleSoapSender(fn() => HttpClient::mock($response));
 
         $payload = SoapPayload::forWsdl(FakeSoapServerClass::WSDL_FILE, 'returnValue');
 

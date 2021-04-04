@@ -2,17 +2,16 @@
 
 The HTTP transport uses [Guzzle][link-guzzle] internally.
 
-## Configuration
+## Activation
 
-You can configure the Guzzle client creation when instantiating the transport:
+The transport needs to be activated using the builder:
 
 ```php
 use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Http\HttpTransport;
-use GuzzleHttp\Client;
 
 $bus = WebServiceBus::builder()
-    ->withTransport(new HttpTransport(fn() => new Client()));
+    ->withTransport(new HttpTransport());
 ```
 
 ## Payload

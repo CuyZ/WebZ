@@ -1,8 +1,8 @@
 <?php
 
-namespace CuyZ\WebZ\Core\Guzzle;
+namespace CuyZ\WebZ\Core\Http;
 
-interface GuzzleClientFactory
+interface HttpClientFactory
 {
     public function build(?string $asyncCallHash): HttpClient;
 }

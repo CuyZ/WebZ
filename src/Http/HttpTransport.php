@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace CuyZ\WebZ\Http;
 
 use Closure;
-use CuyZ\WebZ\Core\Guzzle\AutoFactory;
-use CuyZ\WebZ\Core\Guzzle\GuzzleClientFactory;
-use CuyZ\WebZ\Core\Guzzle\HttpClient;
+use CuyZ\WebZ\Core\Http\AutoFactory;
+use CuyZ\WebZ\Core\Http\HttpClientFactory;
+use CuyZ\WebZ\Core\Http\HttpClient;
 use CuyZ\WebZ\Core\Result\RawResult;
 use CuyZ\WebZ\Core\Transport\AsyncTransport;
 use CuyZ\WebZ\Core\Transport\Transport;
@@ -19,11 +19,11 @@ use Psr\Http\Message\ResponseInterface;
 
 final class HttpTransport implements Transport, AsyncTransport
 {
-    private GuzzleClientFactory $factory;
+    private HttpClientFactory $factory;
     private HttpMessageFormatter $formatter;
 
     /**
-     * @param GuzzleClientFactory|Closure|null $factory
+     * @param HttpClientFactory|Closure|null $factory
      */
     public function __construct($factory = null)
     {
