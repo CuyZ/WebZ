@@ -3,7 +3,7 @@ name: Tests
 on: [ push, pull_request ]
 
 jobs:
-  test:
+  qa:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -12,7 +12,7 @@ jobs:
         php: [ 7.4, 8.0 ]
         dependency-version: [ prefer-lowest, prefer-stable ]
 
-    name: P${{ matrix.php }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
+    name: PHP${{ matrix.php }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
     steps:
       - name: Checkout code
