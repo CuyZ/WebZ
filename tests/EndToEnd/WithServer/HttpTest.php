@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CuyZ\WebZ\Tests\Integration\WithServer;
+namespace CuyZ\WebZ\Tests\EndToEnd\WithServer;
 
 use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Http\HttpTransport;
@@ -11,7 +11,7 @@ use CuyZ\WebZ\Http\Transformer\ScalarTransformer;
 use CuyZ\WebZ\Tests\Fixture\FakeResult;
 use CuyZ\WebZ\Tests\Fixture\Server\HttpHandler;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWrapResultWebService;
-use CuyZ\WebZ\Tests\Integration\ServerTestCase;
+use CuyZ\WebZ\Tests\EndToEnd\ServerTestCase;
 use DateTime;
 use DateTimeZone;
 

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CuyZ\WebZ\Tests\Integration;
+namespace CuyZ\WebZ\Tests\EndToEnd;
 
 use PHPUnit\Framework\TestCase;
 

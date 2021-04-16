@@ -14,8 +14,8 @@
             <directory>tests/Unit</directory>
         </testsuite>
 
-        <testsuite name="integration">
-            <directory>tests/Integration</directory>
+        <testsuite name="e2e">
+            <directory>tests/EndToEnd</directory>
         </testsuite>
     </testsuites>
 </phpunit>

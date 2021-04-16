@@ -1,6 +1,6 @@
 <?php
 
-namespace CuyZ\WebZ\Tests\Integration\WithServer;
+namespace CuyZ\WebZ\Tests\EndToEnd\WithServer;
 
 use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Soap\SoapPayload;
@@ -10,7 +10,7 @@ use CuyZ\WebZ\Tests\Fixture\Soap\Server\FakeSoapServerClass;
 use CuyZ\WebZ\Tests\Fixture\Soap\WebService\TestReturnsInputWebService;
 use CuyZ\WebZ\Tests\Fixture\Soap\WebService\TestThrowsSoapFaultWebService;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyWrapResultWebService;
-use CuyZ\WebZ\Tests\Integration\ServerTestCase;
+use CuyZ\WebZ\Tests\EndToEnd\ServerTestCase;
 use DateTime;
 use DateTimeZone;
 use SoapFault;

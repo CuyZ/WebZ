@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CuyZ\WebZ\Tests\Integration\Bus;
+namespace CuyZ\WebZ\Tests\EndToEnd\Bus;
 
 use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Core\Event\BeforeCallEvent;

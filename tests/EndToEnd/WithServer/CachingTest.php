@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace CuyZ\WebZ\Tests\Integration\WithServer;
+namespace CuyZ\WebZ\Tests\EndToEnd\WithServer;
 
 use CuyZ\WebZ\Core\Bus\WebServiceBus;
 use CuyZ\WebZ\Core\WebService;
 use CuyZ\WebZ\Http\HttpTransport;
 use CuyZ\WebZ\Soap\SoapTransport;
 use CuyZ\WebZ\Tests\Fixture\WebService\DummyCacheWebService;
-use CuyZ\WebZ\Tests\Integration\ServerTestCase;
+use CuyZ\WebZ\Tests\EndToEnd\ServerTestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Component\Cache\Psr16Cache;

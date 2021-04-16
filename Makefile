@@ -28,8 +28,8 @@ test: start-server
 test-unit:
 	php vendor/bin/phpunit --testsuite=unit
 
-test-integration: start-server
-	php vendor/bin/phpunit --testsuite=integration
+test-e2e: start-server
+	php vendor/bin/phpunit --testsuite=e2e
 	$(MAKE) stop-server
 
 coverage:
@@ -45,4 +45,4 @@ static:
 	php vendor/bin/phpstan analyse
 	php vendor/bin/psalm
 
-.PHONY: install start-server stop-server test test-unit test-integration coverage phpstan psalm static
+.PHONY: install start-server stop-server test test-unit test-e2e coverage phpstan psalm static
